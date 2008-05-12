@@ -1,0 +1,27 @@
+#
+# This is the config file, and
+# a '#' or ';' character indicates
+# a comment
+#
+
+; COLOURS!
+[color]
+    branch = auto
+    diff = auto
+    status = auto
+  [color "diff"]
+    old = red bold
+    new = green bold
+  [color "status"]
+    added = green bold
+    changed = cyan bold
+    untracked = yellow
+  [color "branch"]
+    remote = yellow
+
+[alias]
+  co = checkout
+  ci = commit
+  st = status
+  svnup = !git stash && git svn rebase && git stash apply
+
