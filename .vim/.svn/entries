@@ -1,70 +1,0 @@
-8
-
-dir
-16
-http://code.footless.net/home/.vim
-http://code.footless.net
-
-
-
-2008-03-03T06:57:52.559311Z
-16
-foot
-
-
-svn:special svn:externals svn:needs-lock
-
-
-
-
-
-
-
-
-
-
-
-03245f5c-2a38-0410-aa80-8d363f0d7be9
-
-after
-dir
-
-colors
-dir
-
-doc
-dir
-
-syntax
-dir
-
-autoload
-dir
-
-filetype.vim
-file
-
-
-
-
-2008-05-09T07:40:42.000000Z
-efc504e0e7d51dd89c9fa507965cd659
-2007-11-22T04:03:33.486768Z
-10
-foot
-
-python.vim
-file
-
-
-
-
-2008-05-09T07:40:42.000000Z
-d81d550d477c1892426e7d8965da837d
-2007-08-21T00:48:57.445191Z
-5
-foot
-
-plugin
-dir
-
