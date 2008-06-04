@@ -62,13 +62,13 @@ fi
 
 alias loadkeys='keychain ~/.ssh/{id_dsa,id_rsa}'
 alias rsynctestdata='rsync -ave ssh simon.howe@muddy2:/home/gridmo/testdata/ /home/gridmo/testdata/'
-alias more='less'
+# alias more='less'
 
 alias bt='ctags -R . ; etags -R . ; echo "refreshed tags"'
 
-alias h="history"
 alias ll="ls -laF"
-alias ?="h | grep $1"
+alias h?="history | grep $1"
+alias gvim="mvim"
 
 if [ "$OSTYPE" != "darwin9.0" ]; then
 	xset b off # kill the bell!
@@ -77,16 +77,13 @@ if [ "$OSTYPE" != "darwin9.0" ]; then
 	alias open='gnome-open'
 	alias gterm='gnome-terminal --hide-menubar&'
 else
-    . ~/.keychain/${HOSTNAME}-sh
+    if [ -f ~/.keychain/${HOSTNAME}-sh ]; then
+        . ~/.keychain/${HOSTNAME}-sh
+    fi
 fi
 
-function ps? {
-	ps aux | grep "$@"
-}
-
-function gc {
-    eval "awk '{ print \$$1; }'"
-}
+function ps? { ps aux | grep "$@" }
+function gc { eval "awk '{ print \$$1; }'" }
 
 function g {
     echo "================================================================================"
@@ -98,7 +95,6 @@ function g {
 
 export PATH=~/bin:"${PATH}"
 export PYTHONPATH=$PYTHONPATH:~/workspace
-
 export CLASSPATH="${CLASSPATH}:/home/simonhowe/downloads/java/jdk1.5.0_14/jre/lib/plugin.jar" # :/usr/lib/jvm/java-6-sun-1.6.0.03/jre/lib/plugin.jar"
 export PATH=~/lib/flex2/bin:"${PATH}"
 if [ -f ~/.tilefile_helpers ]; then

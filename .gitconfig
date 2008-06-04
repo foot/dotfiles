@@ -25,3 +25,5 @@
   st = status
   svnup = !git stash && git svn rebase && git stash apply
 
+[merge]
+	tool = opendiff

@@ -10,7 +10,7 @@ set guioptions-=m "get rid of (m)enu bar
 set guioptions+=c "no popups, prompt in console instead
 
 " set linespace=1 " 1px between lines
-set guifont=Monaco:11 " Looks good on OSX
+set guifont=Monaco:h10.00 " Looks good on OSX
 " set guifont=Monospace\ 8
 
 let mapleader = ","
@@ -136,6 +136,7 @@ noremap <C-K> :FuzzyFinderTag<cr>
 "nmap <c-space> :FuzzyFinderTag<cr>
 "nmap <cr> :FuzzyFinderTag<cr>
 nmap <c-s> :FuzzyFinderBuffer<cr>
+nmap <c-f> :FuzzyFinderFile<cr>
 let g:FuzzyFinder_KeySwitchMode = '<TAB>'
 let g:FuzzyFinderOptions = {
 \   'file' : {
@@ -203,16 +204,18 @@ au BufNewFile,BufRead * call HighlightSnips()
 " do inline python evals from vimscript
 " e.g. let s:dx = EvalPython("abs(-1)") 
 " 
-function! EvalPython(py_str)
-let g:eval_python_tmp=a:py_str
+if has('python')
+    function! EvalPython(py_str)
+        let g:eval_python_tmp=a:py_str
 python << EOF
 import vim
 py_str = vim.eval("g:eval_python_tmp")
 return_value = eval(py_str)
 vim.command("let g:eval_python_tmp_return=%r" % (return_value,))
 EOF
-return g:eval_python_tmp_return
-endfunction
+        return g:eval_python_tmp_return
+    endfunction
+endif
 
 " turn on hlsearch when searching for something
 nnoremap * :set hlsearch<cr>*
