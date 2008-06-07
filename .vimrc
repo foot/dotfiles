@@ -1,7 +1,7 @@
 set nocompatible
 
 syntax on
-colorscheme desert
+colorscheme inkpot
 
 set guioptions-=T "get rid of (T)oolbar
 set guioptions-=L "get rid of (L)eft scrollbar

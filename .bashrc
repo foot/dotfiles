@@ -82,8 +82,12 @@ else
     fi
 fi
 
-function ps? { ps aux | grep "$@" }
-function gc { eval "awk '{ print \$$1; }'" }
+function ps? {
+    ps aux | grep "$@"
+}
+function gc {
+    eval "awk '{ print \$$1; }'"
+}
 
 function g {
     echo "================================================================================"
