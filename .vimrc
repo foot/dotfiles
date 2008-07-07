@@ -1,7 +1,7 @@
 set nocompatible
 
 syntax on
-colorscheme inkpot
+colorscheme desert
 
 set guioptions-=T "get rid of (T)oolbar
 set guioptions-=L "get rid of (L)eft scrollbar
@@ -31,7 +31,9 @@ set softtabstop=4
 filetype plugin indent on "??
 
 au FileType python set textwidth=79 tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+
 au! BufRead,BufNewFile *.json set filetype=javascript
+au! BufRead,BufNewFile *.m set filetype=objc
 " au FileType ruby set textwidth=79 tabstop=2 shiftwidth=2 softtabstop=2 
 " au FileType actionscript set textwidth=158
 
@@ -116,7 +118,7 @@ map <f9> :NERDTreeToggle<cr>
 nmap <Leader>n :bn<cr>
 nmap <Leader>p :bp<cr>
 nmap <Leader>d :bd<cr>
-nmap <Leader>x :close<cr>
+" nmap <Leader>x :close<cr>
 
 " only for OSX D==Apple
 nmap <D-n> :bn<cr> 
@@ -227,4 +229,6 @@ map 0 ^
 
 " turn hlsearch OFF when using search as a motion: TODO
 " onoremap / :set nohlsearch<cr>/
+
+let g:ECuseAltKeys = 1
 

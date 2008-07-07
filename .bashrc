@@ -98,7 +98,7 @@ function g {
 }
 
 export PATH=~/bin:"${PATH}"
-export PYTHONPATH=$PYTHONPATH:~/workspace
+export PYTHONPATH=$PYTHONPATH:~/workspace:~/src/pyglet
 export CLASSPATH="${CLASSPATH}:/home/simonhowe/downloads/java/jdk1.5.0_14/jre/lib/plugin.jar" # :/usr/lib/jvm/java-6-sun-1.6.0.03/jre/lib/plugin.jar"
 export PATH=~/lib/flex2/bin:"${PATH}"
 if [ -f ~/.tilefile_helpers ]; then
