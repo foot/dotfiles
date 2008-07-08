@@ -780,6 +780,7 @@ function! <SID>OpenFuzzyFinder(mode)
     execute "inoremap <buffer> <silent> <expr> " . s:opt.key_next_mode   . " <SID>OnSwitchMode(+1)"
     execute "inoremap <buffer> <silent> <expr> " . s:opt.key_prev_mode   . " <SID>OnSwitchMode(-1)"
     execute "inoremap <buffer> <silent> <expr> " . s:opt.key_ignore_case . " <SID>OnSwitchIgnoreCase()"
+    execute "noremap <buffer> <silent> <expr> " . "<c-c>"               . " <SID>OnClose()"
 
   endif
 
@@ -1472,6 +1473,11 @@ function! <SID>OnBufLeave()
   call garbagecollect()
 
   return command
+endfunction
+
+"-----------------------------------------------------------------------------
+function! <SID>OnClose()
+  return "\<Esc>"
 endfunction
 
 "-----------------------------------------------------------------------------

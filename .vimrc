@@ -1,7 +1,22 @@
 set nocompatible
 
+let mapleader = ","
+
 syntax on
 colorscheme desert
+
+noremap <Leader>h :call ToggleAgeHighlight()<cr>
+
+let g:age_highlight_on=0
+function! ToggleAgeHighlight()
+    if g:age_highlight_on
+        exec "syntax on"
+    else
+        exec "syntax off"
+        exec "pyfile ~/.vim/gitage.py"
+    end
+    let g:age_highlight_on = !g:age_highlight_on
+endfunction
 
 set guioptions-=T "get rid of (T)oolbar
 set guioptions-=L "get rid of (L)eft scrollbar
@@ -13,7 +28,6 @@ set guioptions+=c "no popups, prompt in console instead
 set guifont=Monaco:h10.00 " Looks good on OSX
 " set guifont=Monospace\ 8
 
-let mapleader = ","
 
 " ----------------------------------------------------------------------------
 " Disable Generation of Backup Files
@@ -129,8 +143,13 @@ nmap <D-d> :bd<cr>
 " map <SPACE> => camelCaseWords
 nmap <space> ,w
 omap <space> ,w
+vmap <space> ,w
 nmap <bs> ,b
 omap <bs> ,b
+vmap <bs> ,b
+nmap <tab> ,e
+omap <tab> ,e
+vmap <tab> ,e
 
 
 "noremap <C-J> /
