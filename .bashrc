@@ -60,7 +60,7 @@ if [ -f /etc/bash_completion ]; then
 fi
 
 
-alias loadkeys='keychain ~/.ssh/{id_dsa,id_rsa}'
+alias loadkeys='keychain -q -Q ~/.ssh/id_dsa'
 alias rsynctestdata='rsync -ave ssh simon.howe@muddy2:/home/gridmo/testdata/ /home/gridmo/testdata/'
 # alias more='less'
 
@@ -98,10 +98,13 @@ function g {
 }
 
 export PATH=~/bin:"${PATH}"
-export PYTHONPATH=$PYTHONPATH:~/workspace:~/src/pyglet
+export PYTHONPATH=~/src/pygments:$PYTHONPATH:~/workspace:~/src/pyglet
 export CLASSPATH="${CLASSPATH}:/home/simonhowe/downloads/java/jdk1.5.0_14/jre/lib/plugin.jar" # :/usr/lib/jvm/java-6-sun-1.6.0.03/jre/lib/plugin.jar"
 export PATH=~/lib/flex2/bin:"${PATH}"
 if [ -f ~/.tilefile_helpers ]; then
 	. ~/.tilefile_helpers
 fi
+export EDITOR=mvim
+
+loadkeys
 

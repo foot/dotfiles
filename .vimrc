@@ -108,6 +108,7 @@ let g:miniBufExplUseSingleClick = 1
 " let g:miniBufExplVSplit = 20
 " let g:miniBufExplSplitBelow=1
 
+noremap <C-k> <C-W>k
 noremap <C-H> <C-W>h
 noremap <C-L> <C-W>l
 noremap <C-j> <C-W>j
@@ -117,7 +118,7 @@ noremap <C-j> <C-W>j
 nnoremap <silent> <F8> :TlistToggle<CR>
 " actionscript tags
 let tlist_actionscript_settings = 'actionscript;c:class;f:method;p:property;v:variable'
-" by default it loads TAGS (caps) files which we want to use for etags
+" by default it loads TAGS (caps) files too, which we want to use for etags
 set tags=./tags,tags 
 
 " Cycle through errors
@@ -147,30 +148,28 @@ vmap <space> ,w
 nmap <bs> ,b
 omap <bs> ,b
 vmap <bs> ,b
-nmap <tab> ,e
-omap <tab> ,e
-vmap <tab> ,e
+" nmap <tab> ,e
+" omap <tab> ,e
+" vmap <tab> ,e
 
-
-"noremap <C-J> /
-noremap <C-K> :FuzzyFinderTag<cr>
-"nmap <c-space> :FuzzyFinderTag<cr>
-"nmap <cr> :FuzzyFinderTag<cr>
+" Fuzzy Finder
+nmap <c-z> :FuzzyFinderTag<cr>
 nmap <c-s> :FuzzyFinderBuffer<cr>
-nmap <c-f> :FuzzyFinderFile<cr>
-let g:FuzzyFinder_KeySwitchMode = '<TAB>'
-let g:FuzzyFinderOptions = {
-\   'file' : {
-\     'abbrev_map' : {
-\       "tf " : ["", "**/"]
-\     },
-\     'initial_text' : "tf "
-\   }
-\ }
+nmap <c-f> :FuzzyFinderFile \*\*\/<cr>
+" Dont use these modes.
+let g:FuzzyFinderOptions = {}
+" let g:FuzzyFinderOptions.Dir = {'mode_available': 0}
+let g:FuzzyFinderOptions.MruFile = {'mode_available': 0}
+let g:FuzzyFinderOptions.MruCmd = {'mode_available': 0}
+let g:FuzzyFinderOptions.FavFile = {'mode_available': 0}
+let g:FuzzyFinderOptions.TaggedFile = {'mode_available': 0}
+" Change open key so we're 'pulling down' new file into current window.
+let g:FuzzyFinderOptions.Base = {}
+let g:FuzzyFinderOptions.Base.key_open = '<c-j>'
+let g:FuzzyFinderOptions.Base.key_open_split = '<CR>'
+" key_next_mode is already <c-l>, change key_prev_mode to matching <c-h>
+let g:FuzzyFinderOptions.Base.key_prev_mode = '<C-h>'
 
-" Jump to tags quickly
-" <C-S> is mapped by incBufSearch
-" nmap <C-S><C-S> :tag 
 
 " for accidental :W instead of :w
 cmap W<cr> w<cr>
@@ -178,19 +177,19 @@ cmap Wq<cr> wq<cr>
 cmap Wqa<cr> wqa<cr>
 
 " for AS3 client
-iabbr trace Log.debug
+" iabbr trace Log.debug
 
 " Select everything
-noremap <Leader>a ggVG
+" noremap <Leader>a ggVG
 
 " !ctags -R . 
-map <M-c> :TC<CR>
+" map <M-c> :TC<CR>
 
 nmap X ci"
-"
+
 " map ,f to display all lines with keyword under cursor and ask which one to
 " jump to
-nmap ,f [I:let nr = input("Which one: ")<Bar>exe "normal " . nr ."[\t"<CR>
+" nmap ,f [I:let nr = input("Which one: ")<Bar>exe "normal " . nr ."[\t"<CR>
 " map CTRL-L to piece-wise copying of the line above the current one
 imap <C-L> @@@<ESC>hhkywjl?@@@<CR>P/@@@<CR>3s
 
@@ -201,7 +200,7 @@ imap <C-F> 
 nnoremap <Esc>P  P'[v']=
 nnoremap <Esc>p  p'[v']=
 
-let g:NERDTreeChDirMode = 0
+" let g:NERDTreeChDirMode = 0
 
 " i <3 python, source a dir specific .vimrc if it exists
 python << EOF
@@ -214,8 +213,8 @@ EOF
 
 " ----------------------------------------------------------------------------
 " PRETTY up snippetsEmu
-let g:snip_start_tag = ""
-let g:snip_end_tag = ""
+let g:snip_start_tag = "‹"
+let g:snip_end_tag = "›"
 function! HighlightSnips()
      exec "hi snippetEmuJump guibg=grey30"
      exec "syn region snippetEmuJump start=/".g:snip_start_tag."/ end=/".g:snip_end_tag."/"
@@ -248,6 +247,4 @@ map 0 ^
 
 " turn hlsearch OFF when using search as a motion: TODO
 " onoremap / :set nohlsearch<cr>/
-
-let g:ECuseAltKeys = 1
 
