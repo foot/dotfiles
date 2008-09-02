@@ -14,14 +14,22 @@
 "   boundaries and uppercase letters. The motions also work on underscore
 "   notation, where words are delimited by underscore ('_') characters. 
 "   From here on, both CamelCase and underscore_notation entities are referred
-"   to as "words" (in double quotes). 
+"   to as "words" (in double quotes). Just like with the regular motions, a
+"   [count] can be prepended to move over multiple "words" at once. 
+"   Outside of "words" (e.g. in non-keyword characters like // or ;), the new
+"   motions move just like the regular motions. 
+"
+"   VIM provides a built-in text object called 'inner word' ('iw'), which works
+"   in operator-pending and visual mode. Analog to that, this script defines
+"   inner "word" motions 'i,w', 'i,b' and 'i,e', which select the "word" (or
+"   multiple "words" if a [count] is given) where the cursor is located. 
 "
 " USAGE:
 "   Use the new motions ',w', ',b' and ',e' in normal mode, operator-pending
 "   mode (cp. :help operator), and visual mode. For example, type 'bc,w' to
 "   change 'Camel' in 'CamelCase' to something else. 
 "
-" EXAMPLE:
+" EXAMPLE: motions
 "   Given the following CamelCase identifiers in a source code fragment:
 "	set Script31337PathAndNameWithoutExtension11=%~dpn0
 "	set Script31337PathANDNameWITHOUTExtension11=%~dpn0
@@ -35,16 +43,41 @@
 "   ,e moves to: se[t], scrip[t], 3133[7], pat[h], an[d], nam[e], withou[t],
 "	extensio[n], 1[1], dpn[0]
 "
+" EXAMPLE: inner motions
+"   Given the following identifier, with the cursor positioned at [x]:
+"	script_31337_path_and_na[m]e_without_extension_11
+"
+"   v3i,w selects script_31337_path_and_[name_without_extension_]11
+"   v3i,b selects script_31337_[path_and_name]_without_extension_11
+"   v3i,e selects script_31337_path_and_[name_without_extension]_11
+"   Instead of visual mode, you can also use c3i,w to change, d3i,w to delete,
+"   gU3i,w to upper-case, and so on. 
+"
 " INSTALLATION: {{{1
 "   Put the script into your user or system VIM plugin directory (e.g.
 "   ~/.vim/plugin). 
 "
 " DEPENDENCIES:
-"   - Requires VIM 6.0 or higher for limited functionality
-"     (,e motions do not work correctly and move like ,w).  
-"   - Requires VIM 7.0 or higher for full functionality. 
+"   - Requires VIM 7.0 or higher. 
 "
 " CONFIGURATION:
+"   If you want to use different mappings, map your keys to the
+"   <Plug>CamelCaseMotion_? mapping targets _before_ sourcing this script
+"   (e.g. in your .vimrc).  
+"
+"   Example: Replace the default 'w', 'b' and 'e' mappings instead of defining
+"   additional mappings ',w', ',b' and ',e':
+"	map <silent> w <Plug>CamelCaseMotion_w
+"	map <silent> b <Plug>CamelCaseMotion_b
+"	map <silent> e <Plug>CamelCaseMotion_e
+"
+"   Example: Replace default 'iw' text-object and define 'ib' and 'ie' motions: 
+"	omap <silent> iw <Plug>CamelCaseMotion_iw
+"	vmap <silent> iw <Plug>CamelCaseMotion_iw
+"	omap <silent> ib <Plug>CamelCaseMotion_ib
+"	vmap <silent> ib <Plug>CamelCaseMotion_ib
+"	omap <silent> ie <Plug>CamelCaseMotion_ie
+"	vmap <silent> ie <Plug>CamelCaseMotion_ie
 "
 " LIMITATIONS:
 "
@@ -68,12 +101,40 @@
 "
 " TODO:
 "
-" Copyright: (C) 2007 by Ingo Karkat
+" Copyright: (C) 2007-2008 by Ingo Karkat
 "   The VIM LICENSE applies to this script; see ':help copyright'. 
 "
 " Source: Based on vimtip #1016 by Anthony Van Ham. 
 " Maintainer:	Ingo Karkat <ingo@karkat.de>
 " REVISION	DATE		REMARKS {{{1
+"   1.40.017	19-May-2008	BF: Now using :normal! to be independent from
+"				any user mappings. Thanks to Neil Walker for the
+"				patch. 
+"   1.40.016	28-Apr-2008	BF: Wrong forward motion stop at the second
+"				digit if a word starts with multiple numbers
+"				(e.g. 1234.56789). Thanks to Wasim Ahmed for
+"				reporting this. 
+"   1.40.015	24-Apr-2008	ENH: Added inner "word" text objects 'i,w' etc.
+"				that work analoguous to the built-in 'iw' text
+"				object. Thanks to David Kotchan for this
+"				suggestion. 
+"   1.30.014	20-Apr-2008	The motions now also stop at non-keyword
+"				boundaries, just like the regular motions. This
+"				has no effect inside a CamelCaseWord or inside
+"				underscore_notation, but it makes the motions
+"				behave like the regular motions (which is
+"				important if you replace the default motions). 
+"				Thanks to Mun Johl for reporting this. 
+"				Now using non-capturing parentheses \%() in the
+"				patterns. 
+"   1.30.013	09-Apr-2008	Refactored away s:VisualCamelCaseMotion(). 
+"				Allowing users to use mappings different than
+"				,w ,b ,e by defining <Plug>CamelCaseMotion_?
+"				target mappings. This can even be used to
+"				replace the default 'w', 'b' and 'e' mappings,
+"				as suggested by Mun Johl. 
+"				Mappings are now created in a generic function. 
+"				Now requires VIM 7.0 or higher. 
 "   1.20.012	02-Jun-2007	BF: Corrected motions through mixed
 "				CamelCase_and_UnderScore words by re-ordering
 "				and narrowing the search patterns.  
@@ -155,14 +216,20 @@
 "	0.01	11-Oct-2005	file creation
 
 " Avoid installing twice or when in compatible mode
-if exists("loaded_camelcasemotion") || (v:version < 600)
+if exists("loaded_camelcasemotion") || (v:version < 700)
     finish
 endif
 let loaded_camelcasemotion = 1
 " }}}1
 
 "- functions ------------------------------------------------------------------"
-function! s:CamelCaseMotion( direction, count, mode ) " {{{1
+function! s:CamelCaseMove( direction, count, mode ) " {{{1
+    " Note: There is no inversion of the regular expression character class
+    " 'keyword character' (\k). We need an inversion "non-keyword" defined as
+    " "any non-whitespace character that is not a keyword character (e.g.
+    " [!@#$%^&*()]. This can be specified via a non-whitespace character in
+    " whose place no keyword character matches (\k\@!\S). 
+
     "echo "count is " . a:count
     let l:i = 0
     while l:i < a:count
@@ -170,8 +237,12 @@ function! s:CamelCaseMotion( direction, count, mode ) " {{{1
 	    " "Forward to end" motion. 
 	    "call search( '\>\|\(\a\|\d\)\+\ze_', 'We' )
 	    " end of ...
-	    " number | ACRONYM followed by CamelCase or number | CamelCase | underscore_notation | word
-	    call search( '\d\+\|\u\+\ze\(\u\l\|\d\)\|\u\l\+\|\(\a\|\d\)\+\ze_\|\>', 'We' )
+	    " number | ACRONYM followed by CamelCase or number | CamelCase | underscore_notation | non-keyword | word
+	    call search( '\d\+\|\u\+\ze\%(\u\l\|\d\)\|\u\l\+\|\%(\a\|\d\)\+\ze_\|\%(\k\@!\S\)\+\|\%(_\@!\k\)\+\>', 'We' )
+	    " Note: word must be defined as '\k\>'; '\>' on its own somehow
+	    " dominates over the previous branch. Plus, \k must exclude the
+	    " underscore, or a trailing one will be incorrectly moved over:
+	    " '\%(_\@!\k\)'. 
 	    if a:mode == 'o'
 		" Note: Special additional treatment for operator-pending mode
 		" "forward to end" motion. 
@@ -191,7 +262,7 @@ function! s:CamelCaseMotion( direction, count, mode ) " {{{1
 		" "set virtualedit=onemore" , but that didn't work. 
 		let l:save_ww = &whichwrap
 		set whichwrap+=l
-		normal l
+		normal! l
 		let &whichwrap = l:save_ww
 	    endif
 	else
@@ -208,11 +279,103 @@ function! s:CamelCaseMotion( direction, count, mode ) " {{{1
 	    "call search( '\<\|\u\(\l\+\|\u\+\ze\u\)\|\d\+', 'W' . l:direction )
 	    "call search( '\<\|\u\(\l\+\|\u\+\ze\u\)\|\d\+\|_\zs\(\a\|\d\)\+', 'W' . l:direction )
 	    " beginning of ...
-	    " word | number | ACRONYM followed by CamelCase or number | CamelCase | underscore followed by ACRONYM, Camel, lowercase or number
-	    call search( '\<\|\d\+\|\u\+\ze\(\u\l\|\d\)\|\u\l\+\|_\zs\(\u\+\|\u\l\+\|\l\+\|\d\+\)', 'W' . l:direction )
+	    " word | empty line | non-keyword after whitespaces | non-whitespace after word | number | ACRONYM followed by CamelCase or number | CamelCase | underscore followed by ACRONYM, Camel, lowercase or number
+	    call search( '\<\D\|^$\|\%(^\|\s\)\+\zs\k\@!\S\|\>\S\|\d\+\|\u\+\ze\%(\u\l\|\d\)\|\u\l\+\|_\zs\%(\u\+\|\u\l\+\|\l\+\|\d\+\)', 'W' . l:direction )
+	    " Note: word must be defined as '\<\D' to avoid that a word like
+	    " 1234Test is moved over as [1][2]34[T]est instead of [1]234[T]est
+	    " because \< matches with zero width, and \d\+ will then start
+	    " matching '234'. To fix that, we make \d\+ be solely responsible
+	    " for numbers by taken this away from \< via \<\D. (An alternative
+	    " would be to replace \d\+ with \D\%#\zs\d\+, but that one is more
+	    " complex.) All other branches are not affected, because they match
+	    " multiple characters and not the same character multiple times. 
 	endif
 	let l:i = l:i + 1
     endwhile
+endfunction
+" }}}1
+
+function! s:CamelCaseMotion( direction, count, mode ) " {{{1
+"*******************************************************************************
+"* PURPOSE:
+"   Perform the motion over CamelCaseWords or underscore_notation. 
+"* ASSUMPTIONS / PRECONDITIONS:
+"   none
+"* EFFECTS / POSTCONDITIONS:
+"   Move cursor / change selection. 
+"* INPUTS:
+"   a:direction	one of 'w', 'b', 'e'
+"   a:count	number of "words" to move over
+"   a:mode	one of 'n', 'o', 'v', 'iv' (latter one is a special visual mode
+"		when inside the inner "word" text objects. 
+"* RETURN VALUES: 
+"   none
+"*******************************************************************************
+    " Visual mode needs special preparations and postprocessing; 
+    " normal and operator-pending mode breeze through to s:CamelCaseMove(). 
+
+    if a:mode == 'v'
+	" Visual mode was left when calling this function. Reselecting the current
+	" selection returns to visual mode and allows to call search() and issue
+	" normal mode motions while staying in visual mode. 
+	normal! gv
+    endif
+    if a:mode == 'v' || a:mode == 'iv'
+
+	" Note_1a:
+	if &selection != 'exclusive' && a:direction == 'w'
+	    normal! l
+	endif
+    endif
+
+    call s:CamelCaseMove( a:direction, a:count, a:mode )
+
+    if a:mode == 'v' || a:mode == 'iv'
+	" Note: 'selection' setting. 
+	if &selection == 'exclusive' && a:direction == 'e'
+	    " When set to 'exclusive', the "forward to end" motion (',e') does not
+	    " include the last character of the moved-over "word". To include that, an
+	    " additional 'l' motion is appended to the motion; similar to the
+	    " special treatment in operator-pending mode. 
+	    normal! l
+	elseif &selection != 'exclusive' && a:direction != 'e'
+	    " Note_1b:
+	    " The forward and backward motions move to the beginning of the next "word".
+	    " When 'selection' is set to 'inclusive' or 'old', this is one character too far. 
+	    " The appended 'h' motion undoes this. Because of this backward step,
+	    " though, the forward motion finds the current "word" again, and would
+	    " be stuck on the current "word". An 'l' motion before the CamelCase
+	    " motion (see Note_1a) fixes that. 
+	    normal! h
+	end
+    endif
+endfunction
+" }}}1
+
+function! s:CamelCaseInnerMotion( direction, count ) " {{{1
+    " If the cursor is positioned on the first character of a CamelWord, the
+    " backward motion would move to the previous word, which would result in a
+    " wrong selection. To fix this, first move the cursor to the right, so that
+    " the backward motion definitely will cover the current "word" under the
+    " cursor. 
+    normal! l
+    
+    " Move "word" backwards, enter visual mode, then move "word" forward. This
+    " selects the inner "word" in visual mode; the operator-pending mode takes
+    " this selection as the area covered by the motion. 
+    if a:direction == 'b'
+	" Do not do the selection backwards, because the backwards "word" motion
+	" in visual mode + selection=inclusive has an off-by-one error. 
+	call s:CamelCaseMotion( 'b', a:count, 'n' )
+	normal! v
+	" We decree that 'b' is the opposite of 'e', not 'w'. This makes more
+	" sense at the end of a line and for underscore_notation. 
+	call s:CamelCaseMotion( 'e', a:count, 'iv' )
+    else
+	call s:CamelCaseMotion( 'b', 1, 'n' )
+	normal! v
+	call s:CamelCaseMotion( a:direction, a:count, 'iv' )
+    endif
 endfunction
 " }}}1
 
@@ -224,61 +387,63 @@ endfunction
 " work with the normal mode mapping: When a count is typed before the mapping,
 " the ':' will convert a count of 3 into ':.,+2MyCommand', but ':3MyCommand'
 " would be required to use -count and <count>. 
-
-" Normal mode motions:
-nmap <silent> <Leader>w :<C-U>call <SID>CamelCaseMotion('w',v:count1,'n')<CR>
-nmap <silent> <Leader>b :<C-U>call <SID>CamelCaseMotion('b',v:count1,'n')<CR>
-nmap <silent> <Leader>e :<C-U>call <SID>CamelCaseMotion('e',v:count1,'n')<CR>
+"
 " We do not provide the fourth "backward to end" motion (,E), because it is
 " seldomly used. 
 
-nmap <silent> <ctrl-shift-W> :<C-U>call <SID>CamelCaseMotion('w',v:count1,'n')<CR>
-nmap <silent> <ctrl-shift-B> :<C-U>call <SID>CamelCaseMotion('b',v:count1,'n')<CR>
-nmap <silent> <ctrl-shift-E> :<C-U>call <SID>CamelCaseMotion('e',v:count1,'n')<CR>
+function! s:CreateMotionMappings() "{{{1
+    " Create mappings according to this template:
+    " (* stands for the mode [nov], ? for the underlying motion [wbe].) 
+    "
+    " *noremap <script> <Plug>CamelCaseMotion_? :<C-U>call <SID>CamelCaseMotion('?',v:count1,'*')<CR>
+    " if ! hasmapto('<Plug>CamelCaseMotion_?', '*')
+    "	  *map <silent> ,? <Plug>CamelCaseMotion_?
+    " endif
 
-
-" Operator-pending mode motions:
-omap <silent> <Leader>w :<C-U>call <SID>CamelCaseMotion('w',v:count1,'o')<CR>
-omap <silent> <Leader>b :<C-U>call <SID>CamelCaseMotion('b',v:count1,'o')<CR>
-omap <silent> <Leader>e :<C-U>call <SID>CamelCaseMotion('e',v:count1,'o')<CR>
-
-
-" Visual mode motions:
-function! s:VisualCamelCaseMotion( direction, count, mode ) " {{{1
-    " Visual mode was left when calling this function. Reselecting the current
-    " selection returns to visual mode and allows to call search() and issue
-    " normal mode motions while staying in visual mode. 
-    normal! gv
-
-    " Note_1a:
-    if &selection != 'exclusive' && a:direction == 'w'
-	normal! l
-    endif
-
-    call s:CamelCaseMotion( a:direction, a:count, a:mode )
-
-    " Note: 'selection' setting. 
-    if &selection == 'exclusive' && a:direction == 'e'
-	" When set to 'exclusive', the "forward to end" motion (',e') does not
-	" include the last character of the moved-over "word". To include that, an
-	" additional 'l' motion is appended to the motion; similar to the
-	" special treatment in operator-pending mode. 
-	normal! l
-    elseif &selection != 'exclusive' && a:direction != 'e'
-	" Note_1b:
-	" The forward and backward motions move to the beginning of the next "word".
-	" When 'selection' is set to 'inclusive' or 'old', this is one character too far. 
-	" The appended 'h' motion undoes this. Because of this backward step,
-	" though, the forward motion finds the current "word" again, and would
-	" be stuck on the current "word". An 'l' motion before the CamelCase
-	" motion (see Note_1a) fixes that. 
-	normal! h
-    end
+    for l:mode in ['n', 'o', 'v']
+	for l:motion in ['w', 'b', 'e']
+	    let l:targetMapping = '<Plug>CamelCaseMotion_' . l:motion
+	    execute l:mode . 'noremap <script> ' . l:targetMapping . ' :<C-U>call <SID>CamelCaseMotion(''' . l:motion . ''',v:count1,''' . l:mode . ''')<CR>'
+	    if ! hasmapto(l:targetMapping, l:mode)
+		execute l:mode . 'map <silent> ,' . l:motion . ' ' . l:targetMapping 
+	    endif
+	endfor
+    endfor
 endfunction
 " }}}1
 
-vmap <silent> <Leader>w :<C-U>call <SID>VisualCamelCaseMotion('w',v:count1,'v')<CR>
-vmap <silent> <Leader>b :<C-U>call <SID>VisualCamelCaseMotion('b',v:count1,'v')<CR>
-vmap <silent> <Leader>e :<C-U>call <SID>VisualCamelCaseMotion('e',v:count1,'v')<CR>
+" To create a text motion, a mapping for operator-pending mode needs to be
+" defined. This mapping should move the cursor according to the implemented
+" motion, or mark the covered text via a visual selection. As inner text motions
+" need to mark both to the left and right of the cursor position, the visual
+" selection needs to be used. 
+"
+" VIM's built-in inner text objects also work in visual mode; they have
+" different behavior depending on whether visual mode has just been entered or
+" whether text has already been selected. 
+" We deviate from that and always override the existing selection. 
+function! s:CreateInnerMotionMappings() "{{{1
+    " Create mappings according to this template:
+    " (* stands for the mode [ov], ? for the underlying motion [wbe].) 
+    "
+    " *noremap <script> <Plug>CamelCaseMotion_i? :<C-U>call <SID>CamelCaseInnerMotion('?',v:count1)<CR>
+    " if ! hasmapto('<Plug>CamelCaseInnerMotion_i?', '*')
+    "	  *map <silent> i,? <Plug>CamelCaseInnerMotion_i?
+    " endif
+
+    for l:mode in ['o', 'v']
+	for l:motion in ['w', 'b', 'e']
+	    let l:targetMapping = '<Plug>CamelCaseMotion_i' . l:motion
+	    execute l:mode . 'noremap <script> ' . l:targetMapping . ' :<C-U>call <SID>CamelCaseInnerMotion(''' . l:motion . ''',v:count1)<CR>'
+	    if ! hasmapto(l:targetMapping, l:mode)
+		execute l:mode . 'map <silent> i,' . l:motion . ' ' . l:targetMapping 
+	    endif
+	endfor
+    endfor
+endfunction
+" }}}1
+
+call s:CreateMotionMappings()
+call s:CreateInnerMotionMappings()
 
 " vim: set sts=4 sw=4 noexpandtab ff=unix fdm=marker :

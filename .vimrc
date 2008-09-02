@@ -1,85 +1,93 @@
 set nocompatible
 
-let mapleader = ","
-
+" ----------------------------------------------------------------------------
+" MAKE PRETTY + HUD
+"
 syntax on
 colorscheme desert
 
-noremap <Leader>h :call ToggleAgeHighlight()<cr>
-
-let g:age_highlight_on=0
-function! ToggleAgeHighlight()
-    if g:age_highlight_on
-        exec "syntax on"
-    else
-        exec "syntax off"
-        exec "pyfile ~/.vim/gitage.py"
-    end
-    let g:age_highlight_on = !g:age_highlight_on
-endfunction
-
-set guioptions-=T "get rid of (T)oolbar
-set guioptions-=L "get rid of (L)eft scrollbar
-set guioptions-=r "get rid of (r)ight scrollbar
-set guioptions-=m "get rid of (m)enu bar
-set guioptions+=c "no popups, prompt in console instead
-
-" set linespace=1 " 1px between lines
-set guifont=Monaco:h10.00 " Looks good on OSX
-" set guifont=Monospace\ 8
-
-
-" ----------------------------------------------------------------------------
-" Disable Generation of Backup Files
-" actually they are nice but vim is stable and doesn't crash :D
-set nobackup
-set noswapfile
-
-" ----------------------------------------------------------------------------
-" TAB / LINE SIZES
-set tabstop=4
-set shiftwidth=4
-set softtabstop=4 
-" set textwidth=79 
-
-filetype plugin indent on "??
-
-au FileType python set textwidth=79 tabstop=4 shiftwidth=4 softtabstop=4 expandtab
-
-au! BufRead,BufNewFile *.json set filetype=javascript
-au! BufRead,BufNewFile *.m set filetype=objc
-" au FileType ruby set textwidth=79 tabstop=2 shiftwidth=2 softtabstop=2 
-" au FileType actionscript set textwidth=158
-
-set expandtab
-
-" ----------------------------------------------------------------------------
-" INDENTATION
-set shiftround " Round indent to multiple of 'shiftwidth'
-set autoindent
-set smartindent
-
-" ----------------------------------------------------------------------------
-" HUD
 set showmatch " When a bracket is inserted, briefly jump to the matching one.
 set ruler     " Show the line and column number of the cursor position, separated by a comma
 set showmode  " If in Insert, Replace or Visual mode put a message on the last line.
 set showcmd   " Show (partial) command in status line
 set wildmode=list:longest,full " On first tab show all matches and complete to point of differ.
+set laststatus=2	"always a status line
+
+" ----------------------------------------------------------------------------
+" FILES & STARTUP
+"
+filetype on           " Enable filetype detection
+filetype indent on    " Enable filetype-specific indenting
+filetype plugin on    " Enable filetype-specific plugins
+
+" default
+set tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+
+au FileType python set textwidth=79 tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+au FileType ruby set textwidth=79 tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+au FileType javascript set tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+au! BufRead,BufNewFile *.json set filetype=javascript
+au! BufRead,BufNewFile Capfile set filetype=ruby
+
+" TODO: i <3 python, but do this in vim.
+" source a dir specific .vimrc if it exists
+python << EOF
+import os, vim
+if os.path.exists(".vimrc"):
+    # avoid loop, do not re-source ~/.vimrc if in ~
+    if os.getcwd() != os.path.expanduser('~'):
+        vim.command(":so .vimrc")
+EOF
+
+" Disable Generation of Backup Files
+set nobackup
+set noswapfile
+
+" mapleader gotta be set before specifying maps
+let mapleader = ","
+
+" ----------------------------------------------------------------------------
+" INDENTATION
+"
+set shiftround " Round indent to multiple of 'shiftwidth'
+set autoindent
+set smartindent
 
 " ----------------------------------------------------------------------------
 " SEARCH
-" set hlsearch
-nmap <Leader><Leader> :set hlsearch!<cr>
-nmap <Leader>/ :set hlsearch!<cr>
+"
 set incsearch
 set ignorecase
 set smartcase
 
-" ----------------------------------------------------------------------------
-" COMPLETION
-" set completeopt=menu,longest,preview
+" turn on hlsearch when searching for something explicitly
+nnoremap * :set hlsearch<cr>*
+nnoremap # :set hlsearch<cr>#
+nnoremap / :set hlsearch<cr>/
+nnoremap ? :set hlsearch<cr>?
+" turn hlsearch OFF
+nnoremap <silent> <a-/> :nohlsearch<CR>
+nmap <Leader><Leader> :set hlsearch!<cr>
+nmap <Leader>/ :set hlsearch!<cr>
+" TODO: turn OFF when using search as a motion
+" onoremap / :set nohlsearch<cr>/
 
+" ----------------------------------------------------------------------------
+" BUFFERS
+"
+set hidden " enable persistent undo across buffers / no whinging on :bn when unsaved!
+
+" Quick buffer change/delete
+nmap <Leader>n :bn<cr>
+nmap <Leader>p :bp<cr>
+nmap <Leader>d :bd<cr>
+" only for OSX (D == Apple)
+" nmap <D-n> :bn<cr> 
+" nmap <D-p> :bp<cr>
+" nmap <D-d> :bd<cr>
+
+" ----------------------------------------------------------------------------
+" MISC
 "
 " allow <BkSpc> to delete line breaks, beyond the start of the current
 " insertion, and over indentations:
@@ -91,34 +99,16 @@ set backspace=eol,start,indent
 " mapping:
 inoremap # X#
 
-" Y behaves like D and C instead of default behaviour (Y == yy)
-" noremap Y y$
-
 " Q for formatting instead of Ex mode.
-noremap Q gqq
+noremap Q gqq 
 
-" enable persistent undo across buffers / no whinging on :bn when unsaved!
-set hidden
-
-" minibuf
-let g:miniBufExplMapCTabSwitchBufs = 1
-let g:miniBufExplUseSingleClick = 1
-"let g:miniBufExplMapWindowNavVim = 1
-" Vertical minibuf
-" let g:miniBufExplVSplit = 20
-" let g:miniBufExplSplitBelow=1
-
+" dirs to window hopping.
 noremap <C-k> <C-W>k
 noremap <C-H> <C-W>h
 noremap <C-L> <C-W>l
 noremap <C-j> <C-W>j
 
-" TagList plugin
-" let Tlist_File_Fold_Auto_Close = 1
-nnoremap <silent> <F8> :TlistToggle<CR>
-" actionscript tags
-let tlist_actionscript_settings = 'actionscript;c:class;f:method;p:property;v:variable'
-" by default it loads TAGS (caps) files too, which we want to use for etags
+" by default it loads TAGS (caps) files which we want to use for etags
 set tags=./tags,tags 
 
 " Cycle through errors
@@ -126,34 +116,115 @@ map <f2> :clist<cr>
 map <f3> :cprevious<cr>
 map <f4> :cnext<cr>
 map <f5> :make<cr>
-" <f8>: Tlist expl.
-map <f9> :NERDTreeToggle<cr>
 
-" Quick buffer change/delete
-nmap <Leader>n :bn<cr>
-nmap <Leader>p :bp<cr>
-nmap <Leader>d :bd<cr>
-" nmap <Leader>x :close<cr>
+" when don't de-ctrl fast enough.
+" TODO: close preview window first if its open.
+nmap <c-w><c-c> <c-w>c
 
-" only for OSX D==Apple
-nmap <D-n> :bn<cr> 
-nmap <D-p> :bp<cr>
-nmap <D-d> :bd<cr>
+" !ctags -R . 
+" map <M-c> :TC<CR>
+
+" AWESOME. TODO: make this auto based on whether near ", ', (, [, or <
+nmap X ci"
+
+" use CTRL-F for omni completion
+imap <C-F> 
+
+" TODO: fixes these two maps up: (so they preserve registers etc)
+" display all lines with keyword under cursor and ask which one to jump to
+" nmap ,f [I:let nr = input("Which one: ")<Bar>exe "normal " . nr ."[\t"<CR>
+" map CTRL-L to piece-wise copying of the line above the current one
+imap <C-L> @@@<ESC>hhkywjl?@@@<CR>P/@@@<CR>3s
+
+" TODO: make these auto: depending on whether contents of buffer is line or not
+" map <Alt-p> and <Alt-P> to paste below/above and reformat
+nnoremap <Esc>P  P'[v']=
+nnoremap <Esc>p  p'[v']=
+
+" do inline python evals from vimscript
+" e.g. let s:dx = EvalPython("abs(-1)") 
+" 
+function! EvalPython(py_str)
+let g:eval_python_tmp=a:py_str
+python << EOF
+import vim
+py_str = vim.eval("g:eval_python_tmp")
+return_value = eval(py_str)
+vim.command("let g:eval_python_tmp_return=%r" % (return_value,))
+EOF
+return g:eval_python_tmp_return
+endfunction
 
 " ----------------------------------------------------------------------------
-" map <SPACE> => camelCaseWords
-nmap <space> ,w
-omap <space> ,w
-vmap <space> ,w
-nmap <bs> ,b
-omap <bs> ,b
-vmap <bs> ,b
-" nmap <tab> ,e
-" omap <tab> ,e
-" vmap <tab> ,e
+" ECLIPSE BLOCK SHIFTING - thnx puyo!
+"
+imap <M-j> <Esc>:m+<CR>gi
+imap <M-k> <Esc>:m-2<CR>gi
+vmap <M-j> :m'>+<CR>gv
+vmap <M-k> :m'<-2<CR>gv
+vmap <M-h> :<<CR>gv
+nmap <M-j> mz:m+<CR>`z
+nmap <M-k> mz:m-2<CR>`z
+vmap <M-l> :><CR>gv
 
+" COMMAND LINE MAPS
+" ----------------------------------------------------------------------------
+"
+" Emacs flavoured command line editing.
+cnoremap <M-BS> <C-W>
+cnoremap <C-A> <Home>
+
+" For accidental :W instead of :w
+cmap W<cr> w<cr>
+cmap Wq<cr> wq<cr>
+cmap Wqa<cr> wqa<cr>
+
+"
+" PLUGIN CONFIGS
+" ============================================================================
+"
+" ----------------------------------------------------------------------------
+" Minibuf explorer 
+"
+" let g:miniBufExplMapCTabSwitchBufs = 1
+" let g:miniBufExplUseSingleClick = 1
+" let g:miniBufExplMapWindowNavVim = 1
+" Vertical minibuf
+" let g:miniBufExplVSplit = 20
+" let g:miniBufExplSplitBelow=1
+
+" minibuf window hopping maps
+noremap <C-k> <C-W>k
+noremap <C-H> <C-W>h
+noremap <C-L> <C-W>l
+noremap <C-j> <C-W>j
+
+" ----------------------------------------------------------------------------
+" TagList plugin
+"
+nnoremap <silent> <F8> :TlistToggle<CR>
+" actionscript tags
+let tlist_actionscript_settings = 'actionscript;c:class;f:method;p:property;v:variable'
+" by default it loads TAGS (caps) files too, which we want to use for etags
+set tags=./tags,tags 
+
+" ----------------------------------------------------------------------------
+" camelCaseWords
+"
+nmap <silent> <space> <Plug>CamelCaseMotion_w
+omap <silent> <space> <Plug>CamelCaseMotion_w
+nmap <silent> <bs> <Plug>CamelCaseMotion_b
+omap <silent> <bs> <Plug>CamelCaseMotion_b
+
+omap <silent> i<space> <Plug>CamelCaseMotion_iw
+vmap <silent> i<space> <Plug>CamelCaseMotion_iw
+omap <silent> i<bs> <Plug>CamelCaseMotion_ib
+vmap <silent> i<bs> <Plug>CamelCaseMotion_ib 
+
+" ----------------------------------------------------------------------------
 " Fuzzy Finder
-nmap <c-z> :FuzzyFinderTag<cr>
+"
+nmap <c-e> :FuzzyFinderTag<cr>
 nmap <c-s> :FuzzyFinderBuffer<cr>
 nmap <c-f> :FuzzyFinderFile \*\*\/<cr>
 " Dont use these modes.
@@ -170,49 +241,9 @@ let g:FuzzyFinderOptions.Base.key_open_split = '<CR>'
 " key_next_mode is already <c-l>, change key_prev_mode to matching <c-h>
 let g:FuzzyFinderOptions.Base.key_prev_mode = '<C-h>'
 
-
-" for accidental :W instead of :w
-cmap W<cr> w<cr>
-cmap Wq<cr> wq<cr>
-cmap Wqa<cr> wqa<cr>
-
-" for AS3 client
-" iabbr trace Log.debug
-
-" Select everything
-" noremap <Leader>a ggVG
-
-" !ctags -R . 
-" map <M-c> :TC<CR>
-
-nmap X ci"
-
-" map ,f to display all lines with keyword under cursor and ask which one to
-" jump to
-" nmap ,f [I:let nr = input("Which one: ")<Bar>exe "normal " . nr ."[\t"<CR>
-" map CTRL-L to piece-wise copying of the line above the current one
-imap <C-L> @@@<ESC>hhkywjl?@@@<CR>P/@@@<CR>3s
-
-" use CTRL-F for omni completion
-imap <C-F> 
-
-" map <Alt-p> and <Alt-P> to paste below/above and reformat
-nnoremap <Esc>P  P'[v']=
-nnoremap <Esc>p  p'[v']=
-
-" let g:NERDTreeChDirMode = 0
-
-" i <3 python, source a dir specific .vimrc if it exists
-python << EOF
-import os, vim
-if os.path.exists(".vimrc"):
-    # avoid loop, do not re-source ~/.vimrc if in ~
-    if os.getcwd() != os.path.expanduser('~'):
-        vim.command(":so .vimrc")
-EOF
-
 " ----------------------------------------------------------------------------
-" PRETTY up snippetsEmu
+" snippetsEmu
+"
 let g:snip_start_tag = "‹"
 let g:snip_end_tag = "›"
 function! HighlightSnips()
@@ -221,30 +252,19 @@ function! HighlightSnips()
 endfunction
 au BufNewFile,BufRead * call HighlightSnips()
 
-" do inline python evals from vimscript
-" e.g. let s:dx = EvalPython("abs(-1)") 
-" 
-if has('python')
-    function! EvalPython(py_str)
-        let g:eval_python_tmp=a:py_str
-python << EOF
-import vim
-py_str = vim.eval("g:eval_python_tmp")
-return_value = eval(py_str)
-vim.command("let g:eval_python_tmp_return=%r" % (return_value,))
-EOF
-        return g:eval_python_tmp_return
-    endfunction
-endif
+" ----------------------------------------------------------------------------
+" GIT-AGE HIGHLIGHT
+"
+noremap <Leader>h :call ToggleAgeHighlight()<cr>
 
-" turn on hlsearch when searching for something
-nnoremap * :set hlsearch<cr>*
-nnoremap # :set hlsearch<cr>#
-nnoremap / :set hlsearch<cr>/
-nnoremap ? :set hlsearch<cr>?
-nnoremap <silent> <a-/> :nohlsearch<CR>
-map 0 ^
-
-" turn hlsearch OFF when using search as a motion: TODO
-" onoremap / :set nohlsearch<cr>/
+let g:age_highlight_on=0
+function! ToggleAgeHighlight()
+    if g:age_highlight_on
+        exec "syntax on"
+    else
+        exec "syntax off"
+        exec "pyfile ~/.vim/gitage.py"
+    end
+    let g:age_highlight_on = !g:age_highlight_on
+endfunction
 
