@@ -66,7 +66,6 @@ nnoremap # :set hlsearch<cr>#
 nnoremap / :set hlsearch<cr>/
 nnoremap ? :set hlsearch<cr>?
 " turn hlsearch OFF
-nnoremap <silent> <a-/> :nohlsearch<CR>
 nmap <Leader><Leader> :set hlsearch!<cr>
 nmap <Leader>/ :set hlsearch!<cr>
 " TODO: turn OFF when using search as a motion
@@ -102,14 +101,11 @@ inoremap # X#
 " Q for formatting instead of Ex mode.
 noremap Q gqq 
 
-" dirs to window hopping.
+" vim dirs to window hopping.
 noremap <C-k> <C-W>k
 noremap <C-H> <C-W>h
 noremap <C-L> <C-W>l
 noremap <C-j> <C-W>j
-
-" by default it loads TAGS (caps) files which we want to use for etags
-set tags=./tags,tags 
 
 " Cycle through errors
 map <f2> :clist<cr>
@@ -193,12 +189,6 @@ cmap Wqa<cr> wqa<cr>
 " let g:miniBufExplVSplit = 20
 " let g:miniBufExplSplitBelow=1
 
-" minibuf window hopping maps
-noremap <C-k> <C-W>k
-noremap <C-H> <C-W>h
-noremap <C-L> <C-W>l
-noremap <C-j> <C-W>j
-
 " ----------------------------------------------------------------------------
 " TagList plugin
 "
@@ -206,7 +196,7 @@ nnoremap <silent> <F8> :TlistToggle<CR>
 " actionscript tags
 let tlist_actionscript_settings = 'actionscript;c:class;f:method;p:property;v:variable'
 " by default it loads TAGS (caps) files too, which we want to use for etags
-set tags=./tags,tags 
+set tags=./tags,tags
 
 " ----------------------------------------------------------------------------
 " camelCaseWords
@@ -227,23 +217,27 @@ vmap <silent> i<bs> <Plug>CamelCaseMotion_ib
 nmap <c-e> :FuzzyFinderTag<cr>
 nmap <c-s> :FuzzyFinderBuffer<cr>
 nmap <c-f> :FuzzyFinderFile \*\*\/<cr>
+
 " Dont use these modes.
 let g:FuzzyFinderOptions = {}
-" let g:FuzzyFinderOptions.Dir = {'mode_available': 0}
+let g:FuzzyFinderOptions.Dir = {'mode_available': 0}
 let g:FuzzyFinderOptions.MruFile = {'mode_available': 0}
 let g:FuzzyFinderOptions.MruCmd = {'mode_available': 0}
 let g:FuzzyFinderOptions.FavFile = {'mode_available': 0}
 let g:FuzzyFinderOptions.TaggedFile = {'mode_available': 0}
+
 " Change open key so we're 'pulling down' new file into current window.
 let g:FuzzyFinderOptions.Base = {}
 let g:FuzzyFinderOptions.Base.key_open = '<c-j>'
 let g:FuzzyFinderOptions.Base.key_open_split = '<CR>'
+
 " key_next_mode is already <c-l>, change key_prev_mode to matching <c-h>
 let g:FuzzyFinderOptions.Base.key_prev_mode = '<C-h>'
 
 " ----------------------------------------------------------------------------
 " snippetsEmu
 "
+" pretty it up.
 let g:snip_start_tag = "‹"
 let g:snip_end_tag = "›"
 function! HighlightSnips()
