@@ -61,8 +61,6 @@ fi
 
 
 alias loadkeys='keychain -q -Q ~/.ssh/id_dsa'
-alias rsynctestdata='rsync -ave ssh simon.howe@muddy2:/home/gridmo/testdata/ /home/gridmo/testdata/'
-# alias more='less'
 
 alias bt='ctags -R . ; etags -R . ; echo "refreshed tags"'
 
@@ -89,18 +87,9 @@ function gc {
     eval "awk '{ print \$$1; }'"
 }
 
-function g {
-    echo "================================================================================"
-    #grep --color -n "$@" `find . -name "*.as"`
-    grep --color -n "$@" `find . ! -path "*.svn/*" ! -name ".svn" ! -name "*.swp" ! -name "*.pyc" ! -path "./tags" ! -path "./client-debug-compilation.log"`
-    #ack "$@"
-    echo "================================================================================"
-}
-
 export PATH=~/bin:"${PATH}"
 export PYTHONPATH=~/src/pygments:$PYTHONPATH:~/workspace:~/src/pyglet
-export CLASSPATH="${CLASSPATH}:/home/simonhowe/downloads/java/jdk1.5.0_14/jre/lib/plugin.jar" # :/usr/lib/jvm/java-6-sun-1.6.0.03/jre/lib/plugin.jar"
-export PATH=~/lib/flex2/bin:"${PATH}"
+export PATH=~/lib/flex3/bin:"${PATH}"
 if [ -f ~/.tilefile_helpers ]; then
 	. ~/.tilefile_helpers
 fi

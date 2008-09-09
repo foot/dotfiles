@@ -23,11 +23,15 @@ filetype plugin on    " Enable filetype-specific plugins
 " default
 set tabstop=4 shiftwidth=4 softtabstop=4 expandtab
 
-au FileType python set textwidth=79 tabstop=4 shiftwidth=4 softtabstop=4 expandtab
-au FileType ruby set textwidth=79 tabstop=2 shiftwidth=2 softtabstop=2 expandtab
-au FileType javascript set tabstop=4 shiftwidth=4 softtabstop=4 expandtab
-au! BufRead,BufNewFile *.json set filetype=javascript
-au! BufRead,BufNewFile Capfile set filetype=ruby
+augroup init
+    au FileType python setlocal textwidth=79 tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+    au FileType ruby setlocal textwidth=79 tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+    au FileType javascript setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+
+    au BufNewFile,BufRead *.as setlocal filetype=actionscript 
+    au BufRead,BufNewFile *.json setlocal filetype=javascript
+    au BufRead,BufNewFile Capfile setlocal filetype=ruby
+augroup END
 
 " TODO: i <3 python, but do this in vim.
 " source a dir specific .vimrc if it exists
@@ -137,6 +141,9 @@ imap <C-L> @@@<ESC>hhkywjl?@@@<CR>P/@@@<CR>3s
 nnoremap <Esc>P  P'[v']=
 nnoremap <Esc>p  p'[v']=
 
+" Rebuild tags file
+nmap <M-c> :!ctags -R .
+
 " do inline python evals from vimscript
 " e.g. let s:dx = EvalPython("abs(-1)") 
 " 
@@ -244,7 +251,9 @@ function! HighlightSnips()
      exec "hi snippetEmuJump guibg=grey30"
      exec "syn region snippetEmuJump start=/".g:snip_start_tag."/ end=/".g:snip_end_tag."/"
 endfunction
-au BufNewFile,BufRead * call HighlightSnips()
+augroup highlight-snips
+    au BufNewFile,BufRead * call HighlightSnips()
+augroup END
 
 " ----------------------------------------------------------------------------
 " GIT-AGE HIGHLIGHT

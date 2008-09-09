@@ -1155,10 +1155,10 @@ endfunction
 
 function! g:FuzzyFinderMode.Tag.on_open(expr, mode)
   return [
-        \   ':tjump ',
-        \   ':stjump ',
-        \   ':vertical :stjump ',
-        \   ':tab :stjump ',
+        \   ':tag ',
+        \   ':stag ',
+        \   ':vertical :stag ',
+        \   ':tab :stag ',
         \ ][a:mode] . a:expr . "\<CR>"
 endfunction
 
