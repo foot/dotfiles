@@ -158,6 +158,9 @@ EOF
 return g:eval_python_tmp_return
 endfunction
 
+" git blame on visual block
+vmap <Leader>a :<C-U>!git blame <C-R>=expand("%") <CR> \| sed -n <C-R>=line("'<") <CR>,<C-R>=line("'>") <CR>p <CR>
+
 " ----------------------------------------------------------------------------
 " ECLIPSE BLOCK SHIFTING - thnx puyo!
 "
