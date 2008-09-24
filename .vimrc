@@ -217,8 +217,11 @@ set tags=./tags,tags
 "
 nmap <silent> <space> <Plug>CamelCaseMotion_w
 omap <silent> <space> <Plug>CamelCaseMotion_w
+vmap <silent> <space> <Plug>CamelCaseMotion_w
+
 nmap <silent> <bs> <Plug>CamelCaseMotion_b
 omap <silent> <bs> <Plug>CamelCaseMotion_b
+vmap <silent> <bs> <Plug>CamelCaseMotion_b
 
 omap <silent> i<space> <Plug>CamelCaseMotion_iw
 vmap <silent> i<space> <Plug>CamelCaseMotion_iw
