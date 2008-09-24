@@ -161,6 +161,8 @@ endfunction
 " git blame on visual block
 vmap <Leader>a :<C-U>!git blame <C-R>=expand("%") <CR> \| sed -n <C-R>=line("'<") <CR>,<C-R>=line("'>") <CR>p <CR>
 
+nmap 0 ^
+
 " ----------------------------------------------------------------------------
 " ECLIPSE BLOCK SHIFTING - thnx puyo!
 "
@@ -184,6 +186,8 @@ cnoremap <C-A> <Home>
 cmap W<cr> w<cr>
 cmap Wq<cr> wq<cr>
 cmap Wqa<cr> wqa<cr>
+
+cmap w!! %!sudo tee > /dev/null %
 
 "
 " PLUGIN CONFIGS
