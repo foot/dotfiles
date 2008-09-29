@@ -60,13 +60,11 @@ if [ -f /etc/bash_completion ]; then
 fi
 
 
-alias loadkeys='keychain -q -Q ~/.ssh/id_dsa'
 
 alias bt='ctags -R . ; etags -R . ; echo "refreshed tags"'
 
 alias ll="ls -laF"
 alias h?="history | grep $1"
-alias gvim="mvim"
 
 if [ "$OSTYPE" != "darwin9.0" ]; then
 	xset b off # kill the bell!
@@ -78,6 +76,14 @@ else
     if [ -f ~/.keychain/${HOSTNAME}-sh ]; then
         . ~/.keychain/${HOSTNAME}-sh
     fi
+    # bash options
+    set completion-ignore-case on
+    export PATH=/opt/local/bin:/opt/local/sbin:$PATH
+    alias gvim="mvim"
+    export EDITOR=mvim
+    # alias loadkeys='keychain -q -Q ~/.ssh/id_dsa'
+    # loadkeys
+    keychain -q -Q ~/.ssh/id_dsa
 fi
 
 function ps? {
@@ -88,12 +94,10 @@ function gc {
 }
 
 export PATH=~/bin:"${PATH}"
+export PATH=~/.cabal/bin:"${PATH}"
 export PYTHONPATH=~/src/pygments:$PYTHONPATH:~/workspace:~/src/pyglet
 export PATH=~/lib/flex3/bin:"${PATH}"
 if [ -f ~/.tilefile_helpers ]; then
 	. ~/.tilefile_helpers
 fi
-export EDITOR=mvim
-
-loadkeys
 
