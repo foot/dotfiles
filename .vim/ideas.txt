@@ -1,0 +1,12 @@
+* function argument text objects.
+    e.g.
+        $ function(a, bunch, of, ban[]anas)
+        $ daa (a for argument)
+        $ function(a, bunch, of)
+        $
+        $ function(some, mo[]re, bananas)
+        $ dia
+        $ function(some, , bananas)
+
+* re-snipping code. Like using snippets, but being able to pattern match a block so you can jump around it.
+
