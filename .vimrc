@@ -233,7 +233,7 @@ vmap <silent> i<bs> <Plug>CamelCaseMotion_ib
 "
 nmap <c-e> :FuzzyFinderTag<cr>
 nmap <c-s> :FuzzyFinderBuffer<cr>
-nmap <c-f> :FuzzyFinderFile \*\*\/<cr>
+nmap <c-f> :FuzzyFinderTextMate<cr>
 
 " Dont use these modes.
 let g:FuzzyFinderOptions = {}
