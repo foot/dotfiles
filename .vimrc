@@ -135,6 +135,7 @@ imap <C-F> 
 " nmap ,f [I:let nr = input("Which one: ")<Bar>exe "normal " . nr ."[\t"<CR>
 " map CTRL-L to piece-wise copying of the line above the current one
 imap <C-L> @@@<ESC>hhkywjl?@@@<CR>P/@@@<CR>3s
+" imap <C-L> <esc>kywjpi
 
 " TODO: make these auto: depending on whether contents of buffer is line or not
 " map <Alt-p> and <Alt-P> to paste below/above and reformat
@@ -159,7 +160,8 @@ return g:eval_python_tmp_return
 endfunction
 
 " git blame on visual block
-vmap <Leader>a :<C-U>!git blame <C-R>=expand("%") <CR> \| sed -n <C-R>=line("'<") <CR>,<C-R>=line("'>") <CR>p <CR>
+vmap <Leader>ga :<C-U>!git blame <C-R>=expand("%") <CR> \| sed -n <C-R>=line("'<") <CR>,<C-R>=line("'>") <CR>p <CR>
+vmap <Leader>sa :<C-U>!svn blame <C-R>=expand("%") <CR> \| sed -n <C-R>=line("'<") <CR>,<C-R>=line("'>") <CR>p <CR>
 
 nmap 0 ^
 
@@ -233,7 +235,10 @@ vmap <silent> i<bs> <Plug>CamelCaseMotion_ib
 "
 nmap <c-e> :FuzzyFinderTag<cr>
 nmap <c-s> :FuzzyFinderBuffer<cr>
-nmap <c-f> :FuzzyFinderFile \*\*\/<cr>
+nmap <c-f> :FuzzyFinderTextMate<cr>
+
+let g:fuzzy_ignore = "vendor/*;lib/paris-cli/*;.git/*"
+let g:fuzzy_matching_limit = 20
 
 " Dont use these modes.
 let g:FuzzyFinderOptions = {}
@@ -242,6 +247,8 @@ let g:FuzzyFinderOptions.MruFile = {'mode_available': 0}
 let g:FuzzyFinderOptions.MruCmd = {'mode_available': 0}
 let g:FuzzyFinderOptions.FavFile = {'mode_available': 0}
 let g:FuzzyFinderOptions.TaggedFile = {'mode_available': 0}
+
+let g:FuzzyFinderOptions.Tag = { 'matching_limit': 20 }
 
 " Change open key so we're 'pulling down' new file into current window.
 let g:FuzzyFinderOptions.Base = {}

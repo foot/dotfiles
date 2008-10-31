@@ -23,6 +23,7 @@
   co = checkout
   ci = commit
   st = status
+  idiff = diff --color-words
   svnup = !git stash && git svn rebase && git stash apply
 
 [merge]

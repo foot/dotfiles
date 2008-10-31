@@ -101,3 +101,12 @@ if [ -f ~/.tilefile_helpers ]; then
 	. ~/.tilefile_helpers
 fi
 
+export TZ=Australia/Sydney
+
+function gg ()
+{
+   local _gg="$1";
+   shift;
+   git --git-dir="${_gg}/.git" --work-tree="${_gg}" "$@"
+}
+
