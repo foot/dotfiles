@@ -237,7 +237,7 @@ nmap <c-e> :FuzzyFinderTag<cr>
 nmap <c-s> :FuzzyFinderBuffer<cr>
 nmap <c-f> :FuzzyFinderTextMate<cr>
 
-let g:fuzzy_ignore = "vendor/*;lib/paris-cli/*;.git/*"
+let g:fuzzy_ignore = "vendor/*;lib/paris-cli/*;.git/*;flash-widget/*"
 let g:fuzzy_matching_limit = 20
 
 " Dont use these modes.

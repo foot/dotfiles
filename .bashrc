@@ -8,8 +8,6 @@
 # don't put duplicate lines in the history. See bash(1) for more options
 export HISTCONTROL=ignoredups
 
-# check the window size after each command and, if necessary, # update the values of LINES and COLUMNS.
-shopt -s checkwinsize
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(lesspipe)"
@@ -76,6 +74,8 @@ else
     if [ -f ~/.keychain/${HOSTNAME}-sh ]; then
         . ~/.keychain/${HOSTNAME}-sh
     fi
+    # check the window size after each command and, if necessary, # update the values of LINES and COLUMNS.
+    shopt -s checkwinsize
     # bash options
     set completion-ignore-case on
     export PATH=/opt/local/bin:/opt/local/sbin:$PATH
@@ -94,14 +94,12 @@ function gc {
 }
 
 export PATH=~/bin:"${PATH}"
-export PATH=~/.cabal/bin:"${PATH}"
+export PATH=~/.cabal/bin:~/.xmonad/:"${PATH}"
 export PYTHONPATH=~/src/pygments:$PYTHONPATH:~/workspace:~/src/pyglet
-export PATH=~/lib/flex3/bin:"${PATH}"
+export PATH=/var/lib/gems/1.8/bin/:~/lib/flex3/bin:"${PATH}"
 if [ -f ~/.tilefile_helpers ]; then
 	. ~/.tilefile_helpers
 fi
-
-export TZ=Australia/Sydney
 
 function gg ()
 {

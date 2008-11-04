@@ -2,7 +2,11 @@
 
 xscreensaver -no-splash &
 
+export PATH=$PATH:/home/simonhowe/.cabal/bin
+
 xmonad
+
+# /home/simonhowe/.cabal/bin/xmonad
 
 # xrdb -merge .Xresources
 
