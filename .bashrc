@@ -2,6 +2,14 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
+if [ "$OSTYPE" == "darwin9.0" ]; then
+    export PATH=/opt/local/bin:/opt/local/sbin:$PATH
+    export MANPATH=/opt/local/share/man:$MANPATH
+fi
+
+export PATH=~/bin:~/.cabal/bin:~/lib/flex3/bin:"${PATH}"
+export PYTHONPATH=~/src/pygments:~/workspace:~/src/pyglet:"${PYTHONPATH}"
+
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
@@ -10,9 +18,6 @@ export HISTCONTROL=ignoredups
 
 # check the window size after each command and, if necessary, # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
-
-# make less more friendly for non-text input files, see lesspipe(1)
-[ -x /usr/bin/lesspipe ] && eval "$(lesspipe)"
 
 # set variable identifying the chroot you work in (used in the prompt below)
 if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
@@ -59,8 +64,6 @@ if [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
 fi
 
-
-
 alias bt='ctags -R . ; etags -R . ; echo "refreshed tags"'
 
 alias ll="ls -laF"
@@ -78,7 +81,6 @@ else
     fi
     # bash options
     set completion-ignore-case on
-    export PATH=/opt/local/bin:/opt/local/sbin:$PATH
     alias gvim="mvim"
     export EDITOR=mvim
     # alias loadkeys='keychain -q -Q ~/.ssh/id_dsa'
@@ -93,10 +95,6 @@ function gc {
     eval "awk '{ print \$$1; }'"
 }
 
-export PATH=~/bin:"${PATH}"
-export PATH=~/.cabal/bin:"${PATH}"
-export PYTHONPATH=~/src/pygments:$PYTHONPATH:~/workspace:~/src/pyglet
-export PATH=~/lib/flex3/bin:"${PATH}"
 if [ -f ~/.tilefile_helpers ]; then
 	. ~/.tilefile_helpers
 fi
