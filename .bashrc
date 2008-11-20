@@ -23,7 +23,7 @@ function my__git_ps1 {
         __git_ps1 "$@"
     fi
 }
-PS1='\[\033[01;32m\]\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]$(my__git_ps1 "\[\033[00m\](\[\033[01;36m\]%s\[\033[00m\])")\$ '
+PS1='\[\033[01;32m\]\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]$(my__git_ps1 "\[\033[00m\] \[\033[01;36m\]%s\[\033[00m\]")\$ '
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
@@ -39,6 +39,10 @@ PS1='\[\033[01;32m\]\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]$(my__git_ps1 "\
 # sources /etc/bash.bashrc).
 if [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
+fi
+
+if [ -f /opt/local/etc/bash_completion ]; then
+    . /opt/local/etc/bash_completion
 fi
 
 alias bt='ctags -R . ; etags -R . ; echo "refreshed tags"'

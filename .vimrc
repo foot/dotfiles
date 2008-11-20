@@ -283,7 +283,7 @@ function! ToggleAgeHighlight()
     if g:age_highlight_on
         exec "syntax on"
     else
-        exec "syntax off"
+        " exec "syntax off"
         exec "pyfile ~/.vim/gitage.py"
     end
     let g:age_highlight_on = !g:age_highlight_on

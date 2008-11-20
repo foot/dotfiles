@@ -55,12 +55,12 @@ def main(filename):
 
     # create hi groups
     for c in set(colors):
-        cmd = "hi git_age_%s guibg=%s" % (c[1:], c)
+        cmd = "highlight git_age_%s guisp=%s" % (c[1:], c)
         vim.command(cmd)
 
     # set syn.
     for i, c in enumerate(colors):
-        cmd = "syn match git_age_%s '\\%%%dl.*'" % (c[1:], i+1)
+        cmd = "syntax match git_age_%s '\\%%%dl.*'" % (c[1:], i+1)
         vim.command(cmd)
 
 if __name__ == '__main__':
