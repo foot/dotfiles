@@ -1225,7 +1225,7 @@ endfunction
 function! g:FuzzyFinderMode.Tag.on_open(expr, mode)
   return [
         \   ':tag ',
-        \   ':stag ',
+        \   ':tselect ',
         \   ':vertical :stag ',
         \   ':tab :stag ',
         \ ][a:mode] . a:expr . "\<CR>"

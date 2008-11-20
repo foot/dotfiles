@@ -88,6 +88,7 @@ nmap <Leader>d :bd<cr>
 " nmap <D-n> :bn<cr> 
 " nmap <D-p> :bp<cr>
 " nmap <D-d> :bd<cr>
+nmap <cr> :w<cr>
 
 " ----------------------------------------------------------------------------
 " MISC

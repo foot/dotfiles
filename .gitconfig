@@ -4,7 +4,10 @@
 # a comment
 #
 
-; COLOURS!
+[user]
+    user = Simon Howe
+    email = footless@gmail.com
+
 [color]
     branch = auto
     diff = auto
@@ -23,8 +26,6 @@
   co = checkout
   ci = commit
   st = status
+  br = branch
   idiff = diff --color-words
-  svnup = !git stash && git svn rebase && git stash apply
 
-[merge]
-	tool = opendiff

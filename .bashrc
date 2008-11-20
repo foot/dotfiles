@@ -7,44 +7,23 @@ if [ "$OSTYPE" == "darwin9.0" ]; then
     export MANPATH=/opt/local/share/man:$MANPATH
 fi
 
+export PATH=/var/lib/gems/1.8/bin:"${PATH}"
 export PATH=~/bin:~/.cabal/bin:~/lib/flex3/bin:"${PATH}"
 export PYTHONPATH=~/src/pygments:~/workspace:~/src/pyglet:"${PYTHONPATH}"
-
-# If not running interactively, don't do anything
-[ -z "$PS1" ] && return
 
 # don't put duplicate lines in the history. See bash(1) for more options
 export HISTCONTROL=ignoredups
 
+# If not running interactively, don't do anything
+[ -z "$PS1" ] && return
 
-# set variable identifying the chroot you work in (used in the prompt below)
-if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
-    debian_chroot=$(cat /etc/debian_chroot)
-fi
-
-# set a fancy prompt (non-color, unless we know we "want" color)
-case "$TERM" in
-xterm-color)
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-    # PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-    ;;
-*)
-    PS1='${debian_chroot:+($debian_chroot)}\h:\w\$ '
-    # PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-    ;;
-esac
-
-# Comment in the above and uncomment this below for a color prompt
-#PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in
-xterm*|rxvt*)
-    PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD/$HOME/~}\007"'
-    ;;
-*)
-    ;;
-esac
+function my__git_ps1 {
+    local g="$(git rev-parse --git-dir 2>/dev/null)"
+    if [ "$g" != "$HOME/.git" -a `pwd` != "$HOME" ]; then
+        __git_ps1 "$@"
+    fi
+}
+PS1='\[\033[01;32m\]\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]$(my__git_ps1 "\[\033[00m\](\[\033[01;36m\]%s\[\033[00m\])")\$ '
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
@@ -88,6 +67,7 @@ else
     keychain -q -Q ~/.ssh/id_dsa
 fi
 
+alias g='grin'
 function ps? {
     ps aux | grep "$@"
 }
@@ -99,8 +79,7 @@ if [ -f ~/.tilefile_helpers ]; then
 	. ~/.tilefile_helpers
 fi
 
-function gg ()
-{
+function gg () {
    local _gg="$1";
    shift;
    git --git-dir="${_gg}/.git" --work-tree="${_gg}" "$@"
