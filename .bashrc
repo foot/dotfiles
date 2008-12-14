@@ -23,7 +23,19 @@ function my__git_ps1 {
         __git_ps1 "$@"
     fi
 }
-PS1='\[\033[01;32m\]\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]$(my__git_ps1 "\[\033[00m\] \[\033[01;36m\]%s\[\033[00m\]")\$ '
+
+# Get the name of the branch we are on
+function git_prompt_info {
+    branch_prompt=$(my__git_ps1 "$@")
+    if [ -n "$branch_prompt" ]; then
+        if current_git_status=$(git status | grep 'added to commit' 2> /dev/null); then
+            branch_prompt="$( echo "$branch_prompt" | sed 's/(/\\033[01;31m(\\033[00m/' | sed 's/)/\\033[01;31m)\\033[00m/' )"
+        fi
+        echo -e "$branch_prompt"
+    fi
+}
+
+PS1='\[\033[01;32m\]\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]$(git_prompt_info "\[\033[00m\](\[\033[01;36m\]%s\[\033[00m\])")\$ '
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
@@ -57,9 +69,6 @@ if [ "$OSTYPE" != "darwin9.0" ]; then
 	alias open='gnome-open'
 	alias gterm='gnome-terminal --hide-menubar&'
 else
-    if [ -f ~/.keychain/${HOSTNAME}-sh ]; then
-        . ~/.keychain/${HOSTNAME}-sh
-    fi
     # check the window size after each command and, if necessary, # update the values of LINES and COLUMNS.
     shopt -s checkwinsize
     # bash options
@@ -68,10 +77,12 @@ else
     export EDITOR=mvim
     # alias loadkeys='keychain -q -Q ~/.ssh/id_dsa'
     # loadkeys
-    keychain -q -Q ~/.ssh/id_dsa
 fi
 
+keychain -q -Q ~/.ssh/id_dsa && sh ~/.keychain/${HOSTNAME}-sh
+
 alias g='grin'
+
 function ps? {
     ps aux | grep "$@"
 }

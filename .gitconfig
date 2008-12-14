@@ -12,15 +12,15 @@
     branch = auto
     diff = auto
     status = auto
-  [color "diff"]
-    old = red bold
-    new = green bold
-  [color "status"]
-    added = green bold
-    changed = cyan bold
-    untracked = yellow
-  [color "branch"]
-    remote = yellow
+  # [color "diff"]
+    # old = red bold
+    # new = green bold
+  # [color "status"]
+    # added = green bold
+    # changed = cyan bold
+    # untracked = yellow
+  # [color "branch"]
+    # remote = yellow
 
 [alias]
   co = checkout
@@ -28,4 +28,5 @@
   st = status
   br = branch
   idiff = diff --color-words
+  shiny-cherry = !git-shiny-cherry
 
