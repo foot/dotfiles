@@ -11,6 +11,9 @@ except ImportError, e:
 
 NOW = datetime.datetime.now()
 
+def cwd():
+    return os.getcwd()
+
 def timedelta_to_i(td):
     return (td.days * 24 * 60 * 60) + td.seconds
 
@@ -33,7 +36,8 @@ def line_to_anno(line):
         }
 
 def annotate(filename):
-    out = os.popen("git annotate %s" % (filename))
+    out = os.popen("git --git-dir=%s --work-tree=%s annotate %s" %
+            (os.path.join(cwd(), '.git'), cwd(), filename))
     return map(line_to_anno, out)
 
 def anno_colors(annos):
@@ -55,7 +59,7 @@ def main(filename):
 
     # create hi groups
     for c in set(colors):
-        cmd = "highlight git_age_%s guisp=%s" % (c[1:], c)
+        cmd = "highlight git_age_%s guibg=%s" % (c[1:], c)
         vim.command(cmd)
 
     # set syn.
