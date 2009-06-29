@@ -5,16 +5,16 @@
 #
 
 [user]
-    user = Simon Howe
+    name = Simon Howe
     email = footless@gmail.com
 
 [color]
     branch = auto
     diff = auto
     status = auto
-  # [color "diff"]
-    # old = red bold
-    # new = green bold
+  [color "diff"]
+    new = green bold black
+    old = red bold black
   # [color "status"]
     # added = green bold
     # changed = cyan bold
@@ -29,4 +29,6 @@
   br = branch
   idiff = diff --color-words
   shiny-cherry = !git-shiny-cherry
+  last-week = log --author=Simon --after='last mon' --before='last sat' --pretty="format:%cD %s"
+  btag = !git tag | grep `git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \\(.*\\)/\\1/'`
 

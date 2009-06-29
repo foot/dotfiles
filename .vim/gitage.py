@@ -64,7 +64,7 @@ def main(filename):
 
     # set syn.
     for i, c in enumerate(colors):
-        cmd = "syntax match git_age_%s '\\%%%dl.*'" % (c[1:], i+1)
+        cmd = "syntax match git_age_%s '^\\%%%dl" % (c[1:], i+1)
         vim.command(cmd)
 
 if __name__ == '__main__':

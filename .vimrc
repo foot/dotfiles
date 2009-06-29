@@ -239,14 +239,14 @@ nmap <c-s> :FuzzyFinderBuffer<cr>
 nmap <c-f> :FuzzyFinderTextMate<cr>
 
 let g:fuzzy_ignore = "vendor/*;lib/paris-cli/*;.git/*;flash-widget/*"
-let g:fuzzy_matching_limit = 20
+let g:fuzzy_enumerating_limit = 20
 
 " Dont use these modes.
 let g:FuzzyFinderOptions = {}
+let g:FuzzyFinderOptions.Bookmark = {'mode_available': 0}
 let g:FuzzyFinderOptions.Dir = {'mode_available': 0}
 let g:FuzzyFinderOptions.MruFile = {'mode_available': 0}
 let g:FuzzyFinderOptions.MruCmd = {'mode_available': 0}
-let g:FuzzyFinderOptions.FavFile = {'mode_available': 0}
 let g:FuzzyFinderOptions.TaggedFile = {'mode_available': 0}
 
 let g:FuzzyFinderOptions.Tag = { 'matching_limit': 20 }
