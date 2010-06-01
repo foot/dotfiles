@@ -2,7 +2,7 @@
 
 xscreensaver -no-splash &
 
-export PATH=$PATH:/home/simonhowe/.cabal/bin
+export PATH=$PATH:/home/simon/.cabal/bin
 
 xmonad
 
