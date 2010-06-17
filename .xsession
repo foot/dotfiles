@@ -1,10 +1,8 @@
 #~/.xsession
 
-xscreensaver -no-splash &
+# xscreensaver -no-splash &
 
-export PATH=$PATH:/home/simon/.cabal/bin
-
-xmonad
+export PATH=$PATH:/home/simon/bin:/home/simon/.cabal/bin
 
 # /home/simonhowe/.cabal/bin/xmonad
 

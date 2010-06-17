@@ -4,7 +4,7 @@ set nocompatible
 " MAKE PRETTY + HUD
 "
 syntax on
-colorscheme desert
+set bg=dark
 
 set showmatch " When a bracket is inserted, briefly jump to the matching one.
 set ruler     " Show the line and column number of the cursor position, separated by a comma
@@ -16,6 +16,8 @@ set laststatus=2	"always a status line
 " ----------------------------------------------------------------------------
 " FILES & STARTUP
 "
+filetype off           " Enable filetype detection
+call pathogen#runtime_append_all_bundles()
 filetype on           " Enable filetype detection
 filetype indent on    " Enable filetype-specific indenting
 filetype plugin on    " Enable filetype-specific plugins
@@ -234,9 +236,8 @@ vmap <silent> i<bs> <Plug>CamelCaseMotion_ib
 " ----------------------------------------------------------------------------
 " Fuzzy Finder
 "
-nmap <c-e> :FuzzyFinderTag<cr>
-nmap <c-s> :FuzzyFinderBuffer<cr>
-nmap <c-f> :FuzzyFinderTextMate<cr>
+nmap <c-e> :FufTag<cr>
+nmap <c-s> :FufBuffer<cr>
 
 let g:fuzzy_ignore = "vendor/*;lib/paris-cli/*;.git/*;flash-widget/*"
 let g:fuzzy_enumerating_limit = 20

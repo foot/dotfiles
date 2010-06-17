@@ -7,9 +7,10 @@ if [ "$OSTYPE" == "darwin9.0" ]; then
     export MANPATH=/opt/local/share/man:$MANPATH
 fi
 
-export PATH=/var/lib/gems/1.8/bin:"${PATH}"
-export PATH=~/bin:~/.cabal/bin:~/lib/flex3/bin:"${PATH}"
-export PYTHONPATH=~/src/pygments:~/workspace:~/src/pyglet:"${PYTHONPATH}"
+# export PATH=/var/lib/gems/1.8/bin:"${PATH}"
+# export PATH=~/bin:~/.cabal/bin:~/lib/flex3/bin:"${PATH}"
+export PATH=~/bin:~/.cabal/bin:~/.seeds/bin:"${PATH}"
+# export PYTHONPATH=~/src/pygments:~/workspace:~/src/pyglet:"${PYTHONPATH}"
 
 # don't put duplicate lines in the history. See bash(1) for more options
 export HISTCONTROL=ignoredups
