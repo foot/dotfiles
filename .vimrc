@@ -1,34 +1,39 @@
 set nocompatible
 
 " ----------------------------------------------------------------------------
-" MAKE PRETTY + HUD
-"
-syntax on
-set bg=dark
-
-set showmatch " When a bracket is inserted, briefly jump to the matching one.
-set ruler     " Show the line and column number of the cursor position, separated by a comma
-set showmode  " If in Insert, Replace or Visual mode put a message on the last line.
-set showcmd   " Show (partial) command in status line
-set wildmode=list:longest,full " On first tab show all matches and complete to point of differ.
-set laststatus=2	"always a status line
-
-" ----------------------------------------------------------------------------
 " FILES & STARTUP
 "
 filetype off           " Enable filetype detection
+call pathogen#helptags()
 call pathogen#runtime_append_all_bundles()
 filetype on           " Enable filetype detection
 filetype indent on    " Enable filetype-specific indenting
 filetype plugin on    " Enable filetype-specific plugins
 
+" ----------------------------------------------------------------------------
+" MAKE PRETTY + HUD
+"
+syntax on
+set bg=dark
+colorscheme desert256
+
+set showmatch " When a bracket is inserted, briefly jump to the matching one.
+set ruler     " Show the line and column number of the cursor position, separated by a comma
+set statusline=%<%f\ %h%m%r%{fugitive#statusline()}%=%-14.(%l,%c%V%)\ %P
+set showmode  " If in Insert, Replace or Visual mode put a message on the last line.
+set showcmd   " Show (partial) command in status line
+set wildmode=list:longest,full " On first tab show all matches and complete to point of differ.
+set laststatus=2	"always a status line
+
 " default
-set tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+set tabstop=4 shiftwidth=4
 
 augroup init
-    au FileType python setlocal textwidth=79 tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+    au FileType python setlocal textwidth=79 tabstop=4 shiftwidth=4
     au FileType ruby setlocal textwidth=79 tabstop=2 shiftwidth=2 softtabstop=2 expandtab
-    au FileType javascript setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+    au FileType javascript setlocal tabstop=2 shiftwidth=2 softtabstop=2
+    au FileType yaml setlocal tabstop=2 shiftwidth=2 softtabstop=2
+    au FileType coffee setlocal textwidth=79 tabstop=2 shiftwidth=2 softtabstop=2 expandtab
 
     au BufNewFile,BufRead *.as setlocal filetype=actionscript 
     au BufRead,BufNewFile *.json setlocal filetype=javascript
@@ -83,14 +88,16 @@ nmap <Leader>/ :set hlsearch!<cr>
 set hidden " enable persistent undo across buffers / no whinging on :bn when unsaved!
 
 " Quick buffer change/delete
-nmap <Leader>n :bn<cr>
-nmap <Leader>p :bp<cr>
+nmap <Leader>n :cn<cr>
+nmap <Leader>p :cp<cr>
 nmap <Leader>d :bd<cr>
 " only for OSX (D == Apple)
 " nmap <D-n> :bn<cr> 
 " nmap <D-p> :bp<cr>
 " nmap <D-d> :bd<cr>
-nmap <cr> :w<cr>
+
+" DISABLE THIS FOR THE MO! TEST OUT losing focus as save instead
+" nmap <cr> :w<cr>
 
 " ----------------------------------------------------------------------------
 " MISC
@@ -163,7 +170,7 @@ return g:eval_python_tmp_return
 endfunction
 
 " git blame on visual block
-vmap <Leader>ga :<C-U>!git blame <C-R>=expand("%") <CR> \| sed -n <C-R>=line("'<") <CR>,<C-R>=line("'>") <CR>p <CR>
+" vmap <Leader>ga :<C-U>!git blame <C-R>=expand("%") <CR> \| sed -n <C-R>=line("'<") <CR>,<C-R>=line("'>") <CR>p <CR>
 vmap <Leader>sa :<C-U>!svn blame <C-R>=expand("%") <CR> \| sed -n <C-R>=line("'<") <CR>,<C-R>=line("'>") <CR>p <CR>
 
 nmap 0 ^
@@ -173,12 +180,18 @@ nmap 0 ^
 "
 imap <M-j> <Esc>:m+<CR>gi
 imap <M-k> <Esc>:m-2<CR>gi
+imap <M-h> <Esc>:<<CR>gi
+imap <M-l> <Esc>:><CR>gi
+
 vmap <M-j> :m'>+<CR>gv
 vmap <M-k> :m'<-2<CR>gv
 vmap <M-h> :<<CR>gv
+vmap <M-l> :><CR>gv
+
 nmap <M-j> mz:m+<CR>`z
 nmap <M-k> mz:m-2<CR>`z
-vmap <M-l> :><CR>gv
+nmap <M-h> <<
+nmap <M-l> >>
 
 " COMMAND LINE MAPS
 " ----------------------------------------------------------------------------
@@ -238,27 +251,36 @@ vmap <silent> i<bs> <Plug>CamelCaseMotion_ib
 "
 nmap <c-e> :FufTag<cr>
 nmap <c-s> :FufBuffer<cr>
+nmap <c-f> :FufFile **/<cr>
+nmap <c-q> :FufQuickfix<cr>
+nmap <c-/> :FufLine<cr>
 
-let g:fuzzy_ignore = "vendor/*;lib/paris-cli/*;.git/*;flash-widget/*"
-let g:fuzzy_enumerating_limit = 20
+" let g:fuzzy_ignore = "vendor/*;lib/paris-cli/*;.git/*;flash-widget/*"
+" let g:fuzzy_enumerating_limit = 20
 
-" Dont use these modes.
-let g:FuzzyFinderOptions = {}
-let g:FuzzyFinderOptions.Bookmark = {'mode_available': 0}
-let g:FuzzyFinderOptions.Dir = {'mode_available': 0}
-let g:FuzzyFinderOptions.MruFile = {'mode_available': 0}
-let g:FuzzyFinderOptions.MruCmd = {'mode_available': 0}
-let g:FuzzyFinderOptions.TaggedFile = {'mode_available': 0}
+let g:fuf_abbrevMap = {
+        \   "VSP$ " : [
+        \     "~/workspace/vsp/**/"
+        \   ],
+        \ }
 
-let g:FuzzyFinderOptions.Tag = { 'matching_limit': 20 }
+" let g:FuzzyFinderOptions.Tag = { 'matching_limit': 20 }
+let g:fuf_modesDisable = [
+        \   'dir', 'mrufile', 'mrucmd',
+        \   'bookmark', 'taggedfile',
+        \   'jumplist', 'changelist', 'help',
+        \   'givenfile', 'givendir', 'givencmd',
+        \   'callbackfile', 'callbackitem',
+        \ ]
 
 " Change open key so we're 'pulling down' new file into current window.
-let g:FuzzyFinderOptions.Base = {}
-let g:FuzzyFinderOptions.Base.key_open = '<c-j>'
-let g:FuzzyFinderOptions.Base.key_open_split = '<CR>'
+let g:fuf_keyOpen = '<c-j>'
+let g:fuf_keyOpenSplit = '<CR>'
 
-" key_next_mode is already <c-l>, change key_prev_mode to matching <c-h>
-let g:FuzzyFinderOptions.Base.key_prev_mode = '<C-h>'
+" the other modes.
+let g:fuf_keyNextMode = '<c-l>'
+let g:fuf_keyPrevMode = '<c-h>'
+let g:fuf_keyPreview = '<c-k>'
 
 " ----------------------------------------------------------------------------
 " snippetsEmu
@@ -311,5 +333,48 @@ endfunction
 "Basically you press * or # to search for the current selection !! Really useful
 vnoremap <silent> * :call VisualSearch('f')<CR>
 vnoremap <silent> # :call VisualSearch('b')<CR>
- 
+
+let g:ackprg="ack-grep -H --nocolor --nogroup --column"
+
+if has("cscope")
+	set csprg=/usr/bin/cscope
+	set csto=0
+	set cst
+	set nocsverb
+	" add any database in current directory
+	if filereadable("cscope.out")
+		cs add cscope.out
+	" else add database pointed to by environment
+	elseif $CSCOPE_DB != ""
+		cs add $CSCOPE_DB
+	endif
+	set csverb
+endif
+
+nmap <C-Space>s :cs find s <C-R>=expand("<cword>")<CR><CR>
+nmap <C-Space>g :cs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <C-Space>c :cs find c <C-R>=expand("<cword>")<CR><CR>
+nmap <C-Space>t :cs find t <C-R>=expand("<cword>")<CR><CR>
+nmap <C-Space>e :cs find e <C-R>=expand("<cword>")<CR><CR>
+nmap <C-Space>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
+nmap <C-Space>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+nmap <C-Space>d :cs find d <C-R>=expand("<cword>")<CR><CR>
+
+" fugitive
+nmap <leader>gs :Gstatus<cr>
+" nmap <leader>gc :Gcommit<cr>
+vmap <leader>ga :Gblame<cr>
+nmap <leader>ga :Gblame<cr>
+nmap <leader>gl :Glog<cr>
+nmap <leader>gd :Gdiff<cr>
+
+" write on loss of focus.
+au FocusLost * :wa
+" try no shift for a bit.
+nnoremap ; :
+
+" 7.3 stuff.
+set relativenumber
+set undodir=/home/simon/.vim/undodir
+set undofile
 

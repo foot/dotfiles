@@ -7,7 +7,7 @@ set guioptions+=c "no popups, prompt in console instead
 set guifont=Liberation\ Mono\ 9
 set columns=80
 set lines=30
-colorscheme desert
+colorscheme mydesert
 "set guifont=Monospace\ 9
 " set cmdheight=2
 

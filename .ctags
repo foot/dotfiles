@@ -6,3 +6,8 @@
 --regex-actionScript=/^[ \t]*[(private|public|static)( \t)]*interface[ \t]+[a-z0-9_.]*([A-Z][A-Za-z0-9_]+)/\1/i,interface,interfaces/
 --regex-actionScript=/^[ \t]*[(private|public|static)( \t)]*class[ \t]+[a-z0-9_.]*([A-Z][A-Za-z0-9_]+)/\1/c,class,classes/
 
+--exclude=tmp
+--langdef=js
+--langmap=js:.js
+--regex-js=/^([A-Za-z0-9_.$]+) = ([A-Za-z0-9._$]+).(create|extend)\(/\1/
+--regex-js=/^[ \t]*([A-Za-z$][A-Za-z0-9_$]+)[ \t]*:[ \t]*function[ \t(]/\1/
