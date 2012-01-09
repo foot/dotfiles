@@ -76,8 +76,7 @@ function refresh_tags {
     ctags --python-kinds=-i $PY_FILES $JS_FILES && echo 'Refreshed tags'
 }
 
-alias rt="refresh_tags"
-alias google-chrome-dev="google-chrome --user-data-dir=$HOME/.config/google-chrome/dev/"
+[[ $TERM == "xterm" ]] && export -p TERM="xterm-256color"
 
 source `which virtualenvwrapper.sh`
 workon default

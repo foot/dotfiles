@@ -38,11 +38,23 @@ set t_Co=256
 
 
 " ----------------------------------------------------------------------------
+" FILES & STARTUP
+"
+filetype off           " Enable filetype detection
+" call pathogen#runtime_append_all_bundles()
+runtime bundle/vim-pathogen/autoload/pathogen.vim
+call pathogen#infect()
+filetype on           " Enable filetype detection
+filetype indent on    " Enable filetype-specific indenting
+filetype plugin on    " Enable filetype-specific plugins
+
+" ----------------------------------------------------------------------------
 " MAKE PRETTY + HUD
 "
 syntax on
+set t_Co=256
 set bg=dark
-" colorscheme desert256
+colorscheme desert256
 
 set showmatch " When a bracket is inserted, briefly jump to the matching one.
 set ruler     " Show the line and column number of the cursor position, separated by a comma
@@ -53,10 +65,8 @@ set wildmode=list:longest,full " On first tab show all matches and complete to p
 set laststatus=2	"always a status line
 
 " default
-set tabstop=4 shiftwidth=4
-
 augroup init
-    au FileType python setlocal textwidth=79 tabstop=4 shiftwidth=4
+    au FileType python setlocal textwidth=79 tabstop=4 shiftwidth=4 softtabstop=4
     au FileType ruby setlocal textwidth=79 tabstop=2 shiftwidth=2 softtabstop=2 expandtab
     au FileType javascript setlocal tabstop=2 shiftwidth=2 softtabstop=2
     au FileType yaml setlocal tabstop=2 shiftwidth=2 softtabstop=2
@@ -66,16 +76,6 @@ augroup init
     au BufRead,BufNewFile *.json setlocal filetype=javascript
     au BufRead,BufNewFile Capfile setlocal filetype=ruby
 augroup END
-
-" TODO: i <3 python, but do this in vim.
-" source a dir specific .vimrc if it exists
-python << EOF
-import os, vim
-if os.path.exists(".vimrc"):
-    # avoid loop, do not re-source ~/.vimrc if in ~
-    if os.getcwd() != os.path.expanduser('~'):
-        vim.command(":so .vimrc")
-EOF
 
 " Disable Generation of Backup Files
 set nobackup
@@ -165,7 +165,7 @@ nmap <c-w><c-c> <c-w>c
 nmap X ci"
 
 " use CTRL-F for omni completion
-imap <C-F> 
+" imap <C-F> 
 
 " TODO: fixes these two maps up: (so they preserve registers etc)
 " display all lines with keyword under cursor and ask which one to jump to
@@ -277,37 +277,27 @@ vmap <silent> i<bs> <Plug>CamelCaseMotion_ib
 " Fuzzy Finder
 "
 nmap <c-e> :FufTag<cr>
+nmap <c-f> :FufCoverageFile<cr>
 nmap <c-s> :FufBuffer<cr>
-nmap <c-f> :FufFile **/<cr>
-nmap <c-q> :FufQuickfix<cr>
-nmap <c-/> :FufLine<cr>
 
-" let g:fuzzy_ignore = "vendor/*;lib/paris-cli/*;.git/*;flash-widget/*"
-" let g:fuzzy_enumerating_limit = 20
-
-let g:fuf_abbrevMap = {
-        \   "VSP$ " : [
-        \     "~/workspace/vsp/**/"
-        \   ],
-        \ }
+" Dont use these modes.
+" let g:FuzzyFinderOptions = {}
+" let g:FuzzyFinderOptions.Bookmark = {'mode_available': 0}
+" let g:FuzzyFinderOptions.Dir = {'mode_available': 0}
+" let g:FuzzyFinderOptions.MruFile = {'mode_available': 0}
+" let g:FuzzyFinderOptions.MruCmd = {'mode_available': 0}
+" let g:FuzzyFinderOptions.TaggedFile = {'mode_available': 0}
 
 " let g:FuzzyFinderOptions.Tag = { 'matching_limit': 20 }
-let g:fuf_modesDisable = [
-        \   'dir', 'mrufile', 'mrucmd',
-        \   'bookmark', 'taggedfile',
-        \   'jumplist', 'changelist', 'help',
-        \   'givenfile', 'givendir', 'givencmd',
-        \   'callbackfile', 'callbackitem',
-        \ ]
 
 " Change open key so we're 'pulling down' new file into current window.
-let g:fuf_keyOpen = '<c-j>'
+let g:fuf_keyOpen = '<C-j>'
 let g:fuf_keyOpenSplit = '<CR>'
 
-" the other modes.
-let g:fuf_keyNextMode = '<c-l>'
-let g:fuf_keyPrevMode = '<c-h>'
-let g:fuf_keyPreview = '<c-k>'
+let g:fuf_coveragefile_exclude = '\v\~$|\.(o|exe|dll|bak|orig|sw[po])$|(^|[/\\])\.(hg|git|bzr)($|[/\\])|^env($|[/\\])'
+
+" key_next_mode is already <c-l>, change key_prev_mode to matching <c-h>
+" let g:FuzzyFinderOptions.Base.key_prev_mode = '<C-h>'
 
 " ----------------------------------------------------------------------------
 " snippetsEmu
@@ -404,4 +394,8 @@ nnoremap ; :
 set relativenumber
 set undodir=/home/simon/.vim/undodir
 set undofile
+ 
+hi DiffAdd      ctermfg=0 ctermbg=2 guibg='green' 
+hi DiffDelete   ctermfg=0 ctermbg=1 guibg='red' 
+hi DiffChange   ctermfg=0 ctermbg=3 guibg='yellow' 
 
