@@ -51,12 +51,23 @@ filetype indent on    " Enable filetype-specific indenting
 filetype plugin on    " Enable filetype-specific plugins
 
 " ----------------------------------------------------------------------------
+" FILES & STARTUP
+"
+filetype off           " Enable filetype detection
+" call pathogen#runtime_append_all_bundles()
+runtime bundle/vim-pathogen/autoload/pathogen.vim
+call pathogen#infect()
+filetype on           " Enable filetype detection
+filetype indent on    " Enable filetype-specific indenting
+filetype plugin on    " Enable filetype-specific plugins
+
+" ----------------------------------------------------------------------------
 " MAKE PRETTY + HUD
 "
 syntax on
 set t_Co=256
 set bg=dark
-colorscheme desert256
+colorscheme wombat256
 
 set showmatch " When a bracket is inserted, briefly jump to the matching one.
 set ruler     " Show the line and column number of the cursor position, separated by a comma
@@ -66,7 +77,6 @@ set showcmd   " Show (partial) command in status line
 set wildmode=list:longest,full " On first tab show all matches and complete to point of differ.
 set laststatus=2	"always a status line
 
-" default
 augroup init
     au FileType python setlocal textwidth=79 tabstop=4 shiftwidth=4 softtabstop=4
     au FileType ruby setlocal textwidth=79 tabstop=2 shiftwidth=2 softtabstop=2 expandtab
