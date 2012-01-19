@@ -1,21 +1,48 @@
-set nocompatible
+set nocompatible               " be iMproved
+filetype off                   " required!
 
-" ----------------------------------------------------------------------------
-" FILES & STARTUP
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
+
+" let Vundle manage Vundle
+" required! 
+Bundle 'gmarik/vundle'
+
+" My Bundles here:
 "
-filetype off           " Enable filetype detection
-call pathogen#helptags()
-call pathogen#runtime_append_all_bundles()
-filetype on           " Enable filetype detection
-filetype indent on    " Enable filetype-specific indenting
-filetype plugin on    " Enable filetype-specific plugins
+" original repos on github
+Bundle 'tpope/vim-fugitive'
+Bundle 'tpope/vim-repeat'
+Bundle 'tpope/vim-surround'
+Bundle 'kevinw/pyflakes-vim'
+Bundle 'mileszs/ack.vim'
+" Bundle 'Lokaltog/vim-easymotion'
+" Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
+Bundle 'sjl/gundo.vim'
+Bundle 'vim-scripts/Color-Sampler-Pack'
+
+" vim-scripts repos
+Bundle 'L9'
+Bundle 'FuzzyFinder'
+Bundle 'camelcasemotion'
+" Bundle 'Railscasts Theme'
+"
+" non github repos
+Bundle 'git://git.wincent.com/command-t.git'
+Bundle 'http://repo.or.cz/r/vcscommand.git'
+" ...
+
+filetype plugin indent on     " required! 
+
+set t_Co=256
+
 
 " ----------------------------------------------------------------------------
 " MAKE PRETTY + HUD
 "
 syntax on
 set bg=dark
-colorscheme desert256
+" colorscheme desert256
 
 set showmatch " When a bracket is inserted, briefly jump to the matching one.
 set ruler     " Show the line and column number of the cursor position, separated by a comma
