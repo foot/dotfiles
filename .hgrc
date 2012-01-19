@@ -1,0 +1,85 @@
+[extensions]
+bookmarks =
+color =
+hgext.extdiff =
+hgext.fetch =
+hgext.graphlog =
+hgext.record =
+mq =
+pager =
+parentrevspec =
+progress =
+purge =
+rebase =
+shelve = ~/src/hgshelve/hgshelve.py
+histedit = ~/src/histedit/hg_histedit.py
+prompt = ~/src/hg-prompt/prompt.py
+remotebranches = ~/src/hg-remotebranches/hg_remotebranches.py
+transplant=
+
+# [paths]
+# d = ssh://hg@home.iptego.net/hg/vsp/
+
+[defaults]
+# do proper renames
+addremove = --similarity 100
+
+[alias]
+nudge = push --branch .
+st = status -C
+
+[diff]
+git = True
+
+[bookmarks]
+# This will cause Mercurial to only track and update the currently active
+# bookmark. This is similar to Git's approach to branching.
+track.current = True
+
+[pager]
+pager = LESS='FSRX' less
+attend = annotate, cat, diff, export, glog, sglog, log, qdiff, incoming, outgoing
+
+[ui]
+username = Simon Howe <simon.howe@iptego.com>
+editor = vim
+
+[color]
+diff.inserted = green bold black_background
+diff.deleted = red bold black_background
+
+[extdiff]
+cmd.wdiff = dwdiff
+opts.wdiff = --color -P -C3
+
+[alias]
+softreset = !hg update 'p1($1)' &&
+             hg revert --all --rev $1 &&
+             hg strip --force $1
+
+
+# dlog = log --style=$HOME/src/mercurial-cli-templates/map-cmdline.dlog
+# _ = dlog -l15
+# __ = _ -l100000000
+# o_ = outgoing -n --style=$HOME/src/mercurial-cli-templates/map-cmdline.dlog
+# i_ = incoming -n --style=$HOME/src/mercurial-cli-templates/map-cmdline.dlog
+
+slog = log -f --style=$HOME/src/mercurial-cli-templates/map-cmdline.sglog
+. = slog -l15
+.. = . -l100000000
+o. = outgoing -n --style=$HOME/src/mercurial-cli-templates/map-cmdline.slog
+i. = incoming -n --style=$HOME/src/mercurial-cli-templates/map-cmdline.slog
+
+sglog = glog --style=$HOME/src/mercurial-cli-templates/map-cmdline.sglog
+, = !$HG sglog -l20 $(echo $HG_ARGS | cut -d ' ' -f 2- -s) | grep -v "^[| ]*$"
+o, = outgoing --graph --style=$HOME/src/mercurial-cli-templates/map-cmdline.sglog
+i, = incoming --graph --style=$HOME/src/mercurial-cli-templates/map-cmdline.sglog
+
+llog = !hg sglog -r `hg debugancestor . origin/default` -r origin/default
+
+upd = update origin/default
+
+# nlog = log --style=$HOME/src/mercurial-cli-templates/map-cmdline.nlog
+# n = nlog -vr
+# show = nlog --color=always -vpr
+
