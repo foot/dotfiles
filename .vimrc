@@ -20,6 +20,7 @@ Bundle 'mileszs/ack.vim'
 " Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
 Bundle 'sjl/gundo.vim'
 Bundle 'vim-scripts/Color-Sampler-Pack'
+Bundle 'groenewege/vim-less.git'
 
 " vim-scripts repos
 Bundle 'L9'
@@ -31,6 +32,7 @@ Bundle 'camelcasemotion'
 Bundle 'git://git.wincent.com/command-t.git'
 Bundle 'http://repo.or.cz/r/vcscommand.git'
 " ...
+Bundle 'kana/vim-textobj-function'
 
 filetype plugin indent on     " required! 
 
@@ -71,9 +73,12 @@ augroup init
     au FileType javascript setlocal tabstop=2 shiftwidth=2 softtabstop=2
     au FileType yaml setlocal tabstop=2 shiftwidth=2 softtabstop=2
     au FileType coffee setlocal textwidth=79 tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+    au FileType html setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+    au FileType scss setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
 
     au BufNewFile,BufRead *.as setlocal filetype=actionscript 
     au BufRead,BufNewFile *.json setlocal filetype=javascript
+    au BufRead,BufNewFile *.scss setlocal filetype=scss
     au BufRead,BufNewFile Capfile setlocal filetype=ruby
 augroup END
 

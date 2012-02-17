@@ -7,7 +7,7 @@ set guioptions+=c "no popups, prompt in console instead
 set guifont=Inconsolata:h14
 set columns=161
 set lines=50
-colorscheme mydesert
+colorscheme wombat
 "set guifont=Monospace\ 9
 " set cmdheight=2
 
