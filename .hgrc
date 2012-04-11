@@ -42,7 +42,7 @@ attend = annotate, cat, diff, export, glog, sglog, log, qdiff, incoming, outgoin
 
 [ui]
 username = Simon Howe <simon.howe@iptego.com>
-style = $HOME/src/mercurial-cli-templates/map-cmdline.sglog
+# style = $HOME/src/mercurial-cli-templates/map-cmdline.sglog
 
 [color]
 diff.inserted = green bold black_background

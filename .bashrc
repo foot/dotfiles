@@ -53,7 +53,7 @@ alias h?="history | grep $1"
 alias g=`which ack-grep ack`
 
 function ps? {
-    ps aux | grep "$@"
+    ps aux | grep -i "$@"
 }
 
 function gc {
@@ -84,3 +84,5 @@ function refresh_tags {
 export NODE_PATH=/usr/local/lib/jsctags/:$NODE_PATH
 alias vim='mvim -v'
 
+
+PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting

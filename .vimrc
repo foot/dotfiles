@@ -21,6 +21,9 @@ Bundle 'mileszs/ack.vim'
 Bundle 'sjl/gundo.vim'
 Bundle 'vim-scripts/Color-Sampler-Pack'
 Bundle 'groenewege/vim-less.git'
+Bundle 'pangloss/vim-javascript'
+Bundle 'hallettj/jslint.vim'
+Bundle 'kchmck/vim-coffee-script'
 
 " vim-scripts repos
 Bundle 'L9'
@@ -85,7 +88,8 @@ augroup init
     au FileType coffee setlocal textwidth=79 tabstop=2 shiftwidth=2 softtabstop=2 expandtab
     au FileType html setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
     au FileType scss setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
-
+    au BufWritePost *.coffee silent CoffeeMake! -b | cwindow | redraw!
+	
     au BufNewFile,BufRead *.as setlocal filetype=actionscript 
     au BufRead,BufNewFile *.json setlocal filetype=javascript
     au BufRead,BufNewFile *.scss setlocal filetype=scss
@@ -294,16 +298,15 @@ vmap <silent> i<bs> <Plug>CamelCaseMotion_ib
 nmap <c-e> :FufTag<cr>
 nmap <c-f> :FufCoverageFile<cr>
 nmap <c-s> :FufBuffer<cr>
+nmap <c-f> :FufCoverageFile<cr>
+nmap <c-q> :FufQuickfix<cr>
+nmap <c-/> :FufLine<cr>
 
-" Dont use these modes.
-" let g:FuzzyFinderOptions = {}
-" let g:FuzzyFinderOptions.Bookmark = {'mode_available': 0}
-" let g:FuzzyFinderOptions.Dir = {'mode_available': 0}
-" let g:FuzzyFinderOptions.MruFile = {'mode_available': 0}
-" let g:FuzzyFinderOptions.MruCmd = {'mode_available': 0}
-" let g:FuzzyFinderOptions.TaggedFile = {'mode_available': 0}
 
-" let g:FuzzyFinderOptions.Tag = { 'matching_limit': 20 }
+let g:fuf_coveragefile_exclude = '\v\~$|\.(o|exe|dll|bak|orig|swp)$|(^|[/\\])(\.hg|\.git|\.bzr|env|env-osx|build)($|[/\\])'
+
+" let g:fuzzy_ignore = "vendor/*;lib/paris-cli/*;.git/*;flash-widget/*"
+" let g:fuzzy_enumerating_limit = 20
 
 " Change open key so we're 'pulling down' new file into current window.
 let g:fuf_keyOpen = '<C-j>'
@@ -392,11 +395,33 @@ nmap <C-Space>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
 nmap <C-Space>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
 nmap <C-Space>d :cs find d <C-R>=expand("<cword>")<CR><CR>
 
+function! s:HgBlame()
+    let fn = expand('%:p')
+
+    wincmd v
+    wincmd h
+    edit __hgblame__
+    vertical resize 28
+
+    setlocal scrollbind winfixwidth nolist nowrap nonumber buftype=nofile ft=none
+
+    normal ggdG
+    execute "silent r!hg blame -undq " . fn
+    normal ggdd
+    execute ':%s/\v:.*$//'
+
+    wincmd l
+    setlocal scrollbind
+    syncbind
+endf
+command! -nargs=0 HgBlame call s:HgBlame()
+nnoremap <leader>ga :HgBlame<cr>
+
 " fugitive
 nmap <leader>gs :Gstatus<cr>
 " nmap <leader>gc :Gcommit<cr>
-vmap <leader>ga :Gblame<cr>
-nmap <leader>ga :Gblame<cr>
+" vmap <leader>ga :Gblame<cr>
+" nmap <leader>ga :Gblame<cr>
 nmap <leader>gl :Glog<cr>
 nmap <leader>gd :Gdiff<cr>
 
