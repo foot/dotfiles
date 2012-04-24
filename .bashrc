@@ -50,7 +50,7 @@ export VISUAL='mvim -f'
 
 alias ll="ls -laF"
 alias h?="history | grep $1"
-alias g=`which ack-grep ack`
+alias g=ack-grep
 
 function ps? {
     ps aux | grep -i "$@"
@@ -78,8 +78,8 @@ function refresh_tags {
 
 [[ $TERM == "xterm" ]] && export -p TERM="xterm-256color"
 
-# source `which virtualenvwrapper.sh`
-# workon default
+source `which virtualenvwrapper.sh`
+workon default
 
 export NODE_PATH=/usr/local/lib/jsctags/:$NODE_PATH
 alias vim='mvim -v'

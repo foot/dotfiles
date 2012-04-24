@@ -35,34 +35,10 @@ Bundle 'camelcasemotion'
 Bundle 'git://git.wincent.com/command-t.git'
 Bundle 'http://repo.or.cz/r/vcscommand.git'
 " ...
-Bundle 'kana/vim-textobj-function'
 
 filetype plugin indent on     " required! 
 
 set t_Co=256
-
-
-" ----------------------------------------------------------------------------
-" FILES & STARTUP
-"
-filetype off           " Enable filetype detection
-" call pathogen#runtime_append_all_bundles()
-runtime bundle/vim-pathogen/autoload/pathogen.vim
-call pathogen#infect()
-filetype on           " Enable filetype detection
-filetype indent on    " Enable filetype-specific indenting
-filetype plugin on    " Enable filetype-specific plugins
-
-" ----------------------------------------------------------------------------
-" FILES & STARTUP
-"
-filetype off           " Enable filetype detection
-" call pathogen#runtime_append_all_bundles()
-runtime bundle/vim-pathogen/autoload/pathogen.vim
-call pathogen#infect()
-filetype on           " Enable filetype detection
-filetype indent on    " Enable filetype-specific indenting
-filetype plugin on    " Enable filetype-specific plugins
 
 " ----------------------------------------------------------------------------
 " MAKE PRETTY + HUD
@@ -94,6 +70,7 @@ augroup init
     au BufRead,BufNewFile *.json setlocal filetype=javascript
     au BufRead,BufNewFile *.scss setlocal filetype=scss
     au BufRead,BufNewFile Capfile setlocal filetype=ruby
+    au BufRead,BufNewFile Vagrantfile setlocal filetype=ruby
 augroup END
 
 " Disable Generation of Backup Files
@@ -296,14 +273,13 @@ vmap <silent> i<bs> <Plug>CamelCaseMotion_ib
 " Fuzzy Finder
 "
 nmap <c-e> :FufTag<cr>
-nmap <c-f> :FufCoverageFile<cr>
 nmap <c-s> :FufBuffer<cr>
 nmap <c-f> :FufCoverageFile<cr>
 nmap <c-q> :FufQuickfix<cr>
 nmap <c-/> :FufLine<cr>
 
 
-let g:fuf_coveragefile_exclude = '\v\~$|\.(o|exe|dll|bak|orig|swp)$|(^|[/\\])(\.hg|\.git|\.bzr|env|env-osx|build)($|[/\\])'
+let g:fuf_coveragefile_exclude = '\v\~$|\.(o|exe|dll|bak|orig|swp)$|(^|[/\\])(\.hg|\.git|\.bzr|env|env-osx|build|pweb/static/extjs)($|[/\\])'
 
 " let g:fuzzy_ignore = "vendor/*;lib/paris-cli/*;.git/*;flash-widget/*"
 " let g:fuzzy_enumerating_limit = 20
@@ -311,11 +287,6 @@ let g:fuf_coveragefile_exclude = '\v\~$|\.(o|exe|dll|bak|orig|swp)$|(^|[/\\])(\.
 " Change open key so we're 'pulling down' new file into current window.
 let g:fuf_keyOpen = '<C-j>'
 let g:fuf_keyOpenSplit = '<CR>'
-
-let g:fuf_coveragefile_exclude = '\v\~$|\.(o|exe|dll|bak|orig|sw[po])$|(^|[/\\])\.(hg|git|bzr)($|[/\\])|^env($|[/\\])'
-
-" key_next_mode is already <c-l>, change key_prev_mode to matching <c-h>
-" let g:FuzzyFinderOptions.Base.key_prev_mode = '<C-h>'
 
 " ----------------------------------------------------------------------------
 " snippetsEmu
@@ -432,7 +403,7 @@ nnoremap ; :
 
 " 7.3 stuff.
 set relativenumber
-set undodir=/home/simon/.vim/undodir
+set undodir=~/.vim/undodir
 set undofile
  
 hi DiffAdd      ctermfg=0 ctermbg=2 guibg='green' 
