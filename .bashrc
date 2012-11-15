@@ -1,4 +1,4 @@
-export PATH=~/bin:~/.cabal/bin:"${PATH}"
+export PATH=/usr/local/sbin:~/bin:~/.cabal/bin:/usr/local/share/npm/bin:"${PATH}"
 
 # don't put duplicate lines in the history. See bash(1) for more options
 export HISTCONTROL=ignoredups
@@ -37,7 +37,7 @@ function do_ps1 {
     local GREEN="\[\033[01;32m\]"
     local BLUE="\[\033[01;34m\]"
     local LIGHT_BLUE="\[\033[01;36m\]"
-	PS1="$GREEN\h$NO_COLOUR:$BLUE\w$NO_COLOUR\$(__git_ps1 \"($LIGHT_BLUE%s$NO_COLOUR)\")\$(hg prompt \"($LIGHT_BLUE{branch}{ {status}}$NO_COLOUR)\" 2> /dev/null)\$ "
+	PS1="$GREEN\h$NO_COLOUR:$BLUE\w$NO_COLOUR\$(__git_ps1 \"($LIGHT_BLUE%s$NO_COLOUR)\")\$(hg prompt \"($LIGHT_BLUE{branch}{ {status}}{update}$NO_COLOUR)\" 2> /dev/null)\$ "
 }
 
 do_ps1
@@ -50,7 +50,7 @@ export VISUAL='mvim -f'
 
 alias ll="ls -laF"
 alias h?="history | grep $1"
-alias g=ack-grep
+alias g=`which ack ack-grep`
 
 function ps? {
     ps aux | grep -i "$@"
@@ -86,3 +86,8 @@ alias vim='mvim -v'
 
 
 PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+
+export USE_ENV=1
+

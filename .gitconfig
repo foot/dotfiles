@@ -34,3 +34,6 @@
   btag = !git tag | grep `git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \\(.*\\)/\\1/'`
   svnbranch = !git log|grep "    git-svn-id: "|head -n1|tr @ ' '|awk '{ print $2 }'|xargs basename
 
+[instaweb]
+httpd=webrick
+

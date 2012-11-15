@@ -11,10 +11,13 @@ parentrevspec =
 progress =
 purge =
 rebase =
+share =
 shelve = ~/src/hgshelve/hgshelve.py
 histedit = ~/src/histedit/hg_histedit.py
 prompt = ~/src/hg-prompt/prompt.py
+collapse = ~/src/hgcollapse/hgext/collapse.py
 remotebranches = ~/src/hg-remotebranches/hg_remotebranches.py
+guestrepo = ~/src/guestrepo/guestrepo
 transplant=
 
 # [paths]
@@ -24,12 +27,11 @@ transplant=
 # do proper renames
 addremove = --similarity 100
 
-[alias]
-nudge = push --branch .
-st = status -C
-
 [diff]
 git = True
+
+[git]
+intree=1
 
 [bookmarks]
 # This will cause Mercurial to only track and update the currently active
@@ -41,8 +43,38 @@ pager = LESS='FSRX' less
 attend = annotate, cat, diff, export, glog, sglog, log, qdiff, incoming, outgoing
 
 [ui]
+merge = p4
 username = Simon Howe <simon.howe@iptego.com>
-# style = $HOME/src/mercurial-cli-templates/map-cmdline.sglog
+ssh = ssh -C
+
+[extdiff]
+cmd.p4diff = /Applications/p4merge.app/Contents/Resources/launchp4merge
+cmd.meld = /Users/simon/bin/meld
+cmd.wdiff = dwdiff
+
+[merge-tools]
+vimdiff.executable = vim
+vimdiff.args = -d $local $other
+
+kdiff3.executable = kdiff3
+kdiff3.args = --auto $base $local $other -o $output
+
+p4.executable = /Applications/p4merge.app/Contents/Resources/launchp4merge
+p4.gui = True
+p4.args = $base $local $other $output
+p4.priority = 100
+
+p42.executable = /Applications/p4merge.app/Contents/Resources/launchp4merge
+p42.gui = True
+p42.args = $local $other
+p42.priority = 100
+
+araxismergetool.premerge = False
+araxismergetool.args = $other $base $local $output
+araxismergetool.executable = /Users/simon/bin/araxishgmerge
+araxismergetool.checkconflict = True
+araxismergetool.binary = True
+araxismergetool.gui =  True
 
 [color]
 diff.inserted = green bold black_background
@@ -53,12 +85,18 @@ cmd.wdiff = dwdiff
 opts.wdiff = --color -P -C3
 
 [alias]
+
+pu = !hg pull && hg up
+st = status -SC
+cm = commit -m
+cuss = commit -m 'Update subrepository state.'
+
 softreset = !hg update 'p1($1)' &&
              hg revert --all --rev $1 &&
              hg strip --force $1
 
 sglog = glog --style=$HOME/src/mercurial-cli-templates/map-cmdline.sglog
-, = !$HG sglog -l20 $(echo $HG_ARGS | cut -d ' ' -f 2- -s) | grep -v "^[| ]*$"
+, = !$HG sglog -l20 $@ | grep -v "^[| ]*$"
 o, = outgoing --graph --style=$HOME/src/mercurial-cli-templates/map-cmdline.sglog
 i, = incoming --graph --style=$HOME/src/mercurial-cli-templates/map-cmdline.sglog
 
@@ -69,4 +107,12 @@ upd = update origin/default
 # nlog = log --style=$HOME/src/mercurial-cli-templates/map-cmdline.nlog
 # n = nlog -vr
 # show = nlog --color=always -vpr
+
+# Run hg commands on all subrepos at once.
+subs = !"$HG" debugsub | grep '^path' | cut -d' ' -f2 | parallel -j10 -I SUB $HG -R "`$HG root`/SUB" $@
+ssubs  = !"$HG" debugsub | grep '^path' | cut -d' ' -f2 | xargs    -n1  -I SUB $HG -R "`$HG root`/SUB" $@
+
+# Run shell commands on all subrepos at once.
+subscmd  = !"$HG" debugsub | grep '^path' | cut -d' ' -f2 | xargs    -n1  -I SUB sh -c "cd `$HG root`/SUB && $@"
+psubscmd = !"$HG" debugsub | grep '^path' | cut -d' ' -f2 | parallel -j10 -I SUB sh -c "cd `$HG root`/SUB && $@"
 

@@ -14,7 +14,7 @@ Bundle 'gmarik/vundle'
 Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-repeat'
 Bundle 'tpope/vim-surround'
-Bundle 'kevinw/pyflakes-vim'
+Bundle 'scrooloose/syntastic'
 Bundle 'mileszs/ack.vim'
 " Bundle 'Lokaltog/vim-easymotion'
 " Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
@@ -22,8 +22,12 @@ Bundle 'sjl/gundo.vim'
 Bundle 'vim-scripts/Color-Sampler-Pack'
 Bundle 'groenewege/vim-less.git'
 Bundle 'pangloss/vim-javascript'
-Bundle 'hallettj/jslint.vim'
+" Bundle 'hallettj/jslint.vim'
 Bundle 'kchmck/vim-coffee-script'
+Bundle 'kien/ctrlp.vim'
+Bundle 'chriskempson/tomorrow-theme', {'rtp': 'vim/'}
+Bundle 'msanders/snipmate.vim'
+Bundle 'digitaltoad/vim-jade'
 
 " vim-scripts repos
 Bundle 'L9'
@@ -46,7 +50,7 @@ set t_Co=256
 syntax on
 set t_Co=256
 set bg=dark
-colorscheme wombat256
+colorscheme Tomorrow-Night
 
 set showmatch " When a bracket is inserted, briefly jump to the matching one.
 set ruler     " Show the line and column number of the cursor position, separated by a comma
@@ -59,11 +63,12 @@ set laststatus=2	"always a status line
 augroup init
     au FileType python setlocal textwidth=79 tabstop=4 shiftwidth=4 softtabstop=4
     au FileType ruby setlocal textwidth=79 tabstop=2 shiftwidth=2 softtabstop=2 expandtab
-    au FileType javascript setlocal tabstop=2 shiftwidth=2 softtabstop=2
+    au FileType javascript setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
     au FileType yaml setlocal tabstop=2 shiftwidth=2 softtabstop=2
     au FileType coffee setlocal textwidth=79 tabstop=2 shiftwidth=2 softtabstop=2 expandtab
     au FileType html setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
     au FileType scss setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+    au FileType jade setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
     au BufWritePost *.coffee silent CoffeeMake! -b | cwindow | redraw!
 	
     au BufNewFile,BufRead *.as setlocal filetype=actionscript 
@@ -97,7 +102,7 @@ set smartcase
 " turn on hlsearch when searching for something explicitly
 nnoremap * :set hlsearch<cr>*
 nnoremap # :set hlsearch<cr>#
-nnoremap / :set hlsearch<cr>/
+" nnoremap / :set hlsearch<cr>/
 nnoremap ? :set hlsearch<cr>?
 " turn hlsearch OFF
 nmap <Leader><Leader> :set hlsearch!<cr>
@@ -272,12 +277,21 @@ vmap <silent> i<bs> <Plug>CamelCaseMotion_ib
 " ----------------------------------------------------------------------------
 " Fuzzy Finder
 "
-nmap <c-e> :FufTag<cr>
-nmap <c-s> :FufBuffer<cr>
-nmap <c-f> :FufCoverageFile<cr>
-nmap <c-q> :FufQuickfix<cr>
-nmap <c-/> :FufLine<cr>
+nmap <c-e> :CtrlPTag<cr>
+nmap <c-s> :CtrlPBuffer<cr>
+let g:ctrlp_map = '<c-f>'
+let g:ctrlp_custom_ignore = 'env$\|.*\.pyc$\|\.hg$\|\.git$'
+let g:ctrlp_root_markers = ['.project-root']
 
+let g:ctrlp_prompt_mappings = {
+    \ 'PrtSelectMove("j")':   ['<c-n>', '<down>'],
+    \ 'PrtSelectMove("k")':   ['<c-p>', '<up>'],
+    \ 'PrtHistory(-1)':       [],
+    \ 'PrtHistory(1)':        [],
+    \ 'AcceptSelection("e")': ['<cr>', '<c-j>', '<2-LeftMouse>'],
+    \ }
+
+let g:ctrlp_max_depth = 10
 
 let g:fuf_coveragefile_exclude = '\v\~$|\.(o|exe|dll|bak|orig|swp)$|(^|[/\\])(\.hg|\.git|\.bzr|env|env-osx|build|pweb/static/extjs)($|[/\\])'
 
@@ -340,7 +354,7 @@ endfunction
 vnoremap <silent> * :call VisualSearch('f')<CR>
 vnoremap <silent> # :call VisualSearch('b')<CR>
 
-let g:ackprg="ack-grep -H --nocolor --nogroup --column"
+let g:ackprg="ack -H --nocolor --nogroup --column"
 
 if has("cscope")
 	set csprg=/usr/bin/cscope
@@ -409,4 +423,13 @@ set undofile
 hi DiffAdd      ctermfg=0 ctermbg=2 guibg='green' 
 hi DiffDelete   ctermfg=0 ctermbg=1 guibg='red' 
 hi DiffChange   ctermfg=0 ctermbg=3 guibg='yellow' 
+
+let g:syntastic_python_checker_args='--ignore=W191'
+let g:syntastic_enable_signs=0
+" let g:syntastic_error_symbol='✗'
+" let g:syntastic_warning_symbol='⚠'
+let g:syntastic_enable_balloons = 1
+
+autocmd BufNewFile,BufRead */fdp*py set expandtab
+autocmd BufNewFile,BufRead */psa*py set expandtab
 
