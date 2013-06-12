@@ -14,6 +14,8 @@ Bundle 'gmarik/vundle'
 Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-repeat'
 Bundle 'tpope/vim-surround'
+Bundle 'tpope/vim-sensible'
+Bundle 'tpope/vim-dispatch'
 Bundle 'scrooloose/syntastic'
 Bundle 'mileszs/ack.vim'
 " Bundle 'Lokaltog/vim-easymotion'
@@ -28,6 +30,13 @@ Bundle 'kien/ctrlp.vim'
 Bundle 'chriskempson/tomorrow-theme', {'rtp': 'vim/'}
 Bundle 'msanders/snipmate.vim'
 Bundle 'digitaltoad/vim-jade'
+Bundle 'tpope/vim-haml'
+" Bundle 'hynek/vim-python-pep8-indent'
+" Bundle 'ciaranm/detectindent'
+Bundle "lepture/vim-jinja"
+
+Bundle 'safetydank/vim-gitgutter'
+Bundle 'mfukar/robotframework-vim'
 
 " vim-scripts repos
 Bundle 'L9'
@@ -42,34 +51,33 @@ Bundle 'http://repo.or.cz/r/vcscommand.git'
 
 filetype plugin indent on     " required! 
 
-set t_Co=256
-
 " ----------------------------------------------------------------------------
 " MAKE PRETTY + HUD
 "
-syntax on
+" syntax on
 set t_Co=256
 set bg=dark
 colorscheme Tomorrow-Night
 
-set showmatch " When a bracket is inserted, briefly jump to the matching one.
-set ruler     " Show the line and column number of the cursor position, separated by a comma
+" set showmatch " When a bracket is inserted, briefly jump to the matching one.
+" set ruler     " Show the line and column number of the cursor position, separated by a comma
 set statusline=%<%f\ %h%m%r%{fugitive#statusline()}%=%-14.(%l,%c%V%)\ %P
 set showmode  " If in Insert, Replace or Visual mode put a message on the last line.
 set showcmd   " Show (partial) command in status line
 set wildmode=list:longest,full " On first tab show all matches and complete to point of differ.
-set laststatus=2	"always a status line
+" set laststatus=2	"always a status line
+set list
 
 augroup init
-    au FileType python setlocal textwidth=79 tabstop=4 shiftwidth=4 softtabstop=4
+    au FileType python setlocal textwidth=79 tabstop=4 shiftwidth=4 softtabstop=4 expandtab
     au FileType ruby setlocal textwidth=79 tabstop=2 shiftwidth=2 softtabstop=2 expandtab
-    au FileType javascript setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+    au FileType javascript setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
     au FileType yaml setlocal tabstop=2 shiftwidth=2 softtabstop=2
     au FileType coffee setlocal textwidth=79 tabstop=2 shiftwidth=2 softtabstop=2 expandtab
     au FileType html setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
     au FileType scss setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
     au FileType jade setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
-    au BufWritePost *.coffee silent CoffeeMake! -b | cwindow | redraw!
+    " au BufWritePost *.coffee silent CoffeeMake! -b | cwindow | redraw!
 	
     au BufNewFile,BufRead *.as setlocal filetype=actionscript 
     au BufRead,BufNewFile *.json setlocal filetype=javascript
@@ -79,7 +87,7 @@ augroup init
 augroup END
 
 " Disable Generation of Backup Files
-set nobackup
+" set nobackup
 set noswapfile
 
 " mapleader gotta be set before specifying maps
@@ -88,14 +96,14 @@ let mapleader = ","
 " ----------------------------------------------------------------------------
 " INDENTATION
 "
-set shiftround " Round indent to multiple of 'shiftwidth'
-set autoindent
+" set shiftround " Round indent to multiple of 'shiftwidth'
+" set autoindent
 set smartindent
 
 " ----------------------------------------------------------------------------
 " SEARCH
 "
-set incsearch
+" set incsearch
 set ignorecase
 set smartcase
 
@@ -291,7 +299,9 @@ let g:ctrlp_prompt_mappings = {
     \ 'AcceptSelection("e")': ['<cr>', '<c-j>', '<2-LeftMouse>'],
     \ }
 
-let g:ctrlp_max_depth = 10
+" let g:ctrlp_max_depth = 10
+let g:ctrlp_max_files = 15000
+
 
 let g:fuf_coveragefile_exclude = '\v\~$|\.(o|exe|dll|bak|orig|swp)$|(^|[/\\])(\.hg|\.git|\.bzr|env|env-osx|build|pweb/static/extjs)($|[/\\])'
 
@@ -417,7 +427,6 @@ nnoremap ; :
 
 " 7.3 stuff.
 set relativenumber
-set undodir=~/.vim/undodir
 set undofile
  
 hi DiffAdd      ctermfg=0 ctermbg=2 guibg='green' 
@@ -430,6 +439,9 @@ let g:syntastic_enable_signs=0
 " let g:syntastic_warning_symbol='⚠'
 let g:syntastic_enable_balloons = 1
 
-autocmd BufNewFile,BufRead */fdp*py set expandtab
-autocmd BufNewFile,BufRead */psa*py set expandtab
+" autocmd BufNewFile,BufRead */fdp*py set expandtab
+" autocmd BufNewFile,BufRead */psa*py set expandtab
 
+" autocmd BufReadPost * :DetectIndent
+
+let g:ftplugin_sql_omni_key = ''

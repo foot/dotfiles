@@ -11,17 +11,16 @@ parentrevspec =
 progress =
 purge =
 rebase =
+# This one got a bit complicated.
 share =
-shelve = ~/src/hgshelve/hgshelve.py
-histedit = ~/src/histedit/hg_histedit.py
+histedit =
 prompt = ~/src/hg-prompt/prompt.py
-collapse = ~/src/hgcollapse/hgext/collapse.py
 remotebranches = ~/src/hg-remotebranches/hg_remotebranches.py
-guestrepo = ~/src/guestrepo/guestrepo
+# guestrepo = ~/src/guestrepo/guestrepo
 transplant=
-
-# [paths]
-# d = ssh://hg@home.iptego.net/hg/vsp/
+shelve=~/src/hgshelve/hgshelve.py
+churn=
+schemes=
 
 [defaults]
 # do proper renames
@@ -51,6 +50,7 @@ ssh = ssh -C
 cmd.p4diff = /Applications/p4merge.app/Contents/Resources/launchp4merge
 cmd.meld = /Users/simon/bin/meld
 cmd.wdiff = dwdiff
+opts.wdiff = --color -P -C3
 
 [merge-tools]
 vimdiff.executable = vim
@@ -80,9 +80,8 @@ araxismergetool.gui =  True
 diff.inserted = green bold black_background
 diff.deleted = red bold black_background
 
-[extdiff]
-cmd.wdiff = dwdiff
-opts.wdiff = --color -P -C3
+[schemes]
+pld = ssh://hg@hg.iptego.net/hg/
 
 [alias]
 
@@ -116,3 +115,5 @@ ssubs  = !"$HG" debugsub | grep '^path' | cut -d' ' -f2 | xargs    -n1  -I SUB $
 subscmd  = !"$HG" debugsub | grep '^path' | cut -d' ' -f2 | xargs    -n1  -I SUB sh -c "cd `$HG root`/SUB && $@"
 psubscmd = !"$HG" debugsub | grep '^path' | cut -d' ' -f2 | parallel -j10 -I SUB sh -c "cd `$HG root`/SUB && $@"
 
+[merge-patterns]
+**debian/changelog = internal:local
