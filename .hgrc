@@ -43,7 +43,7 @@ attend = annotate, cat, diff, export, glog, sglog, log, qdiff, incoming, outgoin
 
 [ui]
 merge = p4
-username = Simon Howe <simon.howe@iptego.com>
+username = Simon Howe <simon.howe@oracle.com>
 ssh = ssh -C
 
 [extdiff]
@@ -81,10 +81,11 @@ diff.inserted = green bold black_background
 diff.deleted = red bold black_background
 
 [schemes]
-pld = ssh://hg@hg.iptego.net/hg/
+# pld = ssh://hg@hg.iptego.net/hg/
+# pld = ssh://hg@hg.de.oracle.com/hg/
+pld = ssh://hg@localhost:2223/hg/
 
 [alias]
-
 pu = !hg pull && hg up
 st = status -SC
 cm = commit -m

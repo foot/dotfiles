@@ -1,4 +1,4 @@
-export PATH=~/bin:/usr/local/sbin:/usr/local/bin:~/.cabal/bin:/usr/local/share/npm/bin:"${PATH}"
+export PATH=~/bin:/usr/local/sbin:/usr/local/bin:~/.cabal/bin:/usr/local/share/npm/bin:./node_modules/.bin/:"${PATH}"
 
 
 # If not running interactively, don't do anything

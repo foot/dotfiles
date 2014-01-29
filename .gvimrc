@@ -5,7 +5,8 @@ set guioptions-=m "get rid of (m)enu bar
 set guioptions+=c "no popups, prompt in console instead
 
 " set guifont=Inconsolata:h14
-set guifont=Source\ Code\ Pro:h11
+"set guifont=Source\ Code\ Pro:h11
+set guifont=Sauce\ Code\ Powerline:h11
 set columns=169
 set lines=50
 colorscheme Tomorrow-Night

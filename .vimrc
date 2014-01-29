@@ -16,6 +16,7 @@ Bundle 'tpope/vim-repeat'
 Bundle 'tpope/vim-surround'
 Bundle 'tpope/vim-sensible'
 Bundle 'tpope/vim-dispatch'
+Bundle 'tpope/vim-fireplace'
 Bundle 'scrooloose/syntastic'
 Bundle 'mileszs/ack.vim'
 " Bundle 'Lokaltog/vim-easymotion'
@@ -34,14 +35,22 @@ Bundle 'tpope/vim-haml'
 " Bundle 'hynek/vim-python-pep8-indent'
 " Bundle 'ciaranm/detectindent'
 Bundle "lepture/vim-jinja"
+Bundle "bling/vim-airline"
+Bundle "ludovicchabant/vim-lawrencium"
+Bundle "embear/vim-localvimrc"
 
-Bundle 'safetydank/vim-gitgutter'
+Bundle "Shougo/unite.vim"
+Bundle "Shougo/vimproc.vim"
+
+" Bundle 'safetydank/vim-gitgutter'
 Bundle 'mfukar/robotframework-vim'
+Bundle 'marijnh/tern_for_vim'
 
 " vim-scripts repos
 Bundle 'L9'
 Bundle 'FuzzyFinder'
 Bundle 'camelcasemotion'
+Bundle "guns/vim-clojure-static"
 " Bundle 'Railscasts Theme'
 "
 " non github repos
@@ -71,7 +80,7 @@ set list
 augroup init
     au FileType python setlocal textwidth=79 tabstop=4 shiftwidth=4 softtabstop=4 expandtab
     au FileType ruby setlocal textwidth=79 tabstop=2 shiftwidth=2 softtabstop=2 expandtab
-    au FileType javascript setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+    au FileType javascript setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
     au FileType yaml setlocal tabstop=2 shiftwidth=2 softtabstop=2
     au FileType coffee setlocal textwidth=79 tabstop=2 shiftwidth=2 softtabstop=2 expandtab
     au FileType html setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
@@ -82,6 +91,7 @@ augroup init
     au BufNewFile,BufRead *.as setlocal filetype=actionscript 
     au BufRead,BufNewFile *.json setlocal filetype=javascript
     au BufRead,BufNewFile *.scss setlocal filetype=scss
+    au BufRead,BufNewFile *.cljs setlocal filetype=clojure
     au BufRead,BufNewFile Capfile setlocal filetype=ruby
     au BufRead,BufNewFile Vagrantfile setlocal filetype=ruby
 augroup END
@@ -288,7 +298,7 @@ vmap <silent> i<bs> <Plug>CamelCaseMotion_ib
 nmap <c-e> :CtrlPTag<cr>
 nmap <c-s> :CtrlPBuffer<cr>
 let g:ctrlp_map = '<c-f>'
-let g:ctrlp_custom_ignore = 'env$\|.*\.pyc$\|\.hg$\|\.git$'
+let g:ctrlp_custom_ignore = 'bower_components$\|node_modules$\|env$\|.*\.pyc$\|\.hg$\|\.git$'
 let g:ctrlp_root_markers = ['.project-root']
 
 let g:ctrlp_prompt_mappings = {
@@ -300,7 +310,7 @@ let g:ctrlp_prompt_mappings = {
     \ }
 
 " let g:ctrlp_max_depth = 10
-let g:ctrlp_max_files = 15000
+let g:ctrlp_max_files = 25000
 
 
 let g:fuf_coveragefile_exclude = '\v\~$|\.(o|exe|dll|bak|orig|swp)$|(^|[/\\])(\.hg|\.git|\.bzr|env|env-osx|build|pweb/static/extjs)($|[/\\])'
@@ -428,6 +438,7 @@ nnoremap ; :
 " 7.3 stuff.
 set relativenumber
 set undofile
+set undodir^=~/.vim/undo
  
 hi DiffAdd      ctermfg=0 ctermbg=2 guibg='green' 
 hi DiffDelete   ctermfg=0 ctermbg=1 guibg='red' 
@@ -444,4 +455,7 @@ let g:syntastic_enable_balloons = 1
 
 " autocmd BufReadPost * :DetectIndent
 
-let g:ftplugin_sql_omni_key = ''
+" let g:ftplugin_sql_omni_key = ''
+
+
+let g:airline_powerline_fonts = 1
