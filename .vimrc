@@ -16,13 +16,13 @@ Bundle 'tpope/vim-repeat'
 Bundle 'tpope/vim-surround'
 Bundle 'tpope/vim-sensible'
 Bundle 'tpope/vim-dispatch'
-Bundle 'tpope/vim-fireplace'
 Bundle 'scrooloose/syntastic'
 Bundle 'mileszs/ack.vim'
 " Bundle 'Lokaltog/vim-easymotion'
 " Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
 Bundle 'sjl/gundo.vim'
 Bundle 'vim-scripts/Color-Sampler-Pack'
+Bundle 'flazz/vim-colorschemes'
 Bundle 'groenewege/vim-less.git'
 Bundle 'pangloss/vim-javascript'
 " Bundle 'hallettj/jslint.vim'
@@ -45,18 +45,27 @@ Bundle "Shougo/vimproc.vim"
 " Bundle 'safetydank/vim-gitgutter'
 Bundle 'mfukar/robotframework-vim'
 Bundle 'marijnh/tern_for_vim'
+Bundle 'junkblocker/patchreview-vim'
 
 " vim-scripts repos
-Bundle 'L9'
-Bundle 'FuzzyFinder'
+"Bundle 'L9'
+"Bundle 'FuzzyFinder'
 Bundle 'camelcasemotion'
 Bundle "guns/vim-clojure-static"
 " Bundle 'Railscasts Theme'
+Bundle 'leafgarland/typescript-vim'
+Bundle 'jsx/jsx.vim'
 "
 " non github repos
-Bundle 'git://git.wincent.com/command-t.git'
+"Bundle 'git://git.wincent.com/command-t.git'
 Bundle 'http://repo.or.cz/r/vcscommand.git'
 " ...
+
+Bundle 'scrooloose/nerdtree.git'
+Bundle "vim-scripts/logstash.vim"
+Bundle "vim-scripts/paredit.vim"
+" Bundle 'szw/vim-tags'
+Bundle 'ntpeters/vim-better-whitespace'
 
 filetype plugin indent on     " required! 
 
@@ -78,20 +87,21 @@ set wildmode=list:longest,full " On first tab show all matches and complete to p
 set list
 
 augroup init
-    au FileType python setlocal textwidth=79 tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+    au FileType python setlocal textwidth=79 tabstop=4 shiftwidth=4 softtabstop=4
     au FileType ruby setlocal textwidth=79 tabstop=2 shiftwidth=2 softtabstop=2 expandtab
-    au FileType javascript setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+    au FileType javascript setlocal tabstop=4 shiftwidth=4 softtabstop=4
     au FileType yaml setlocal tabstop=2 shiftwidth=2 softtabstop=2
-    au FileType coffee setlocal textwidth=79 tabstop=2 shiftwidth=2 softtabstop=2 expandtab
-    au FileType html setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
-    au FileType scss setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
-    au FileType jade setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+    au FileType coffee setlocal textwidth=79 tabstop=2 shiftwidth=2 softtabstop=2
+    au FileType html setlocal tabstop=2 shiftwidth=2 softtabstop=2
+    au FileType scss setlocal tabstop=2 shiftwidth=2 softtabstop=2
+    au FileType jade setlocal tabstop=2 shiftwidth=2 softtabstop=2
     " au BufWritePost *.coffee silent CoffeeMake! -b | cwindow | redraw!
 	
     au BufNewFile,BufRead *.as setlocal filetype=actionscript 
     au BufRead,BufNewFile *.json setlocal filetype=javascript
     au BufRead,BufNewFile *.scss setlocal filetype=scss
     au BufRead,BufNewFile *.cljs setlocal filetype=clojure
+    au BufRead,BufNewFile *.boot setlocal filetype=clojure
     au BufRead,BufNewFile Capfile setlocal filetype=ruby
     au BufRead,BufNewFile Vagrantfile setlocal filetype=ruby
 augroup END
@@ -274,7 +284,7 @@ nnoremap <silent> <F8> :TlistToggle<CR>
 " actionscript tags
 let tlist_actionscript_settings = 'actionscript;c:class;f:method;p:property;v:variable'
 " by default it loads TAGS (caps) files too, which we want to use for etags
-set tags=./tags,tags
+set tags=./tags,tags,../tags
 
 " ----------------------------------------------------------------------------
 " camelCaseWords
@@ -298,9 +308,9 @@ vmap <silent> i<bs> <Plug>CamelCaseMotion_ib
 nmap <c-e> :CtrlPTag<cr>
 nmap <c-s> :CtrlPBuffer<cr>
 let g:ctrlp_map = '<c-f>'
+let g:ctrlp_cmd = 'CtrlPMixed'
 let g:ctrlp_custom_ignore = 'bower_components$\|node_modules$\|env$\|.*\.pyc$\|\.hg$\|\.git$'
-let g:ctrlp_root_markers = ['.project-root']
-
+let g:ctrlp_root_markers = ['.ctrlp']
 let g:ctrlp_prompt_mappings = {
     \ 'PrtSelectMove("j")':   ['<c-n>', '<down>'],
     \ 'PrtSelectMove("k")':   ['<c-p>', '<up>'],
@@ -308,19 +318,19 @@ let g:ctrlp_prompt_mappings = {
     \ 'PrtHistory(1)':        [],
     \ 'AcceptSelection("e")': ['<cr>', '<c-j>', '<2-LeftMouse>'],
     \ }
-
 " let g:ctrlp_max_depth = 10
-let g:ctrlp_max_files = 25000
+let g:ctrlp_max_files = 50000
+let g:ctrlp_follow_symlinks = 0
+let g:ctrlp_user_command = 'ag --nogroup --nobreak --noheading --nocolor -g "" %s '
 
 
-let g:fuf_coveragefile_exclude = '\v\~$|\.(o|exe|dll|bak|orig|swp)$|(^|[/\\])(\.hg|\.git|\.bzr|env|env-osx|build|pweb/static/extjs)($|[/\\])'
-
+" let g:fuf_coveragefile_exclude = '\v\~$|\.(o|exe|dll|bak|orig|swp)$|(^|[/\\])(\.hg|\.git|\.bzr|env|env-osx|build|pweb/static/extjs)($|[/\\])'
 " let g:fuzzy_ignore = "vendor/*;lib/paris-cli/*;.git/*;flash-widget/*"
 " let g:fuzzy_enumerating_limit = 20
 
 " Change open key so we're 'pulling down' new file into current window.
-let g:fuf_keyOpen = '<C-j>'
-let g:fuf_keyOpenSplit = '<CR>'
+" let g:fuf_keyOpen = '<C-j>'
+" let g:fuf_keyOpenSplit = '<CR>'
 
 " ----------------------------------------------------------------------------
 " snippetsEmu
@@ -425,7 +435,7 @@ nnoremap <leader>ga :HgBlame<cr>
 " fugitive
 nmap <leader>gs :Gstatus<cr>
 " nmap <leader>gc :Gcommit<cr>
-" vmap <leader>ga :Gblame<cr>
+vmap <leader>ga :Gblame<cr>
 " nmap <leader>ga :Gblame<cr>
 nmap <leader>gl :Glog<cr>
 nmap <leader>gd :Gdiff<cr>
@@ -444,11 +454,13 @@ hi DiffAdd      ctermfg=0 ctermbg=2 guibg='green'
 hi DiffDelete   ctermfg=0 ctermbg=1 guibg='red' 
 hi DiffChange   ctermfg=0 ctermbg=3 guibg='yellow' 
 
-let g:syntastic_python_checker_args='--ignore=W191'
+" let g:syntastic_python_checkers = ['flake8']
 let g:syntastic_enable_signs=0
 " let g:syntastic_error_symbol='✗'
 " let g:syntastic_warning_symbol='⚠'
 let g:syntastic_enable_balloons = 1
+
+let g:unite_enable_start_insert=1
 
 " autocmd BufNewFile,BufRead */fdp*py set expandtab
 " autocmd BufNewFile,BufRead */psa*py set expandtab
@@ -459,3 +471,7 @@ let g:syntastic_enable_balloons = 1
 
 
 let g:airline_powerline_fonts = 1
+
+nmap <leader>j :%!python -m json.tool<cr>
+
+let NERDTreeIgnore=['\.pyc$']

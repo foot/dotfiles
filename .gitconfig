@@ -33,15 +33,34 @@
   last-week = log --author=Simon --after='last mon' --before='last sat' --pretty="format:%cD %s"
   btag = !git tag | grep `git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \\(.*\\)/\\1/'`
   svnbranch = !git log|grep "    git-svn-id: "|head -n1|tr @ ' '|awk '{ print $2 }'|xargs basename
+  lg1 = log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
+  lg2 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
+  lg = !git --no-pager log --graph --full-history --all --abbrev-commit --decorate --oneline -n100 --color $@ | head -n $((`tput lines` - 2))
+  lgl = !git --no-pager log --graph --abbrev-commit --decorate --oneline -n100 --color $@ | head -n $((`tput lines` - 2))
+  recent-remotes = for-each-ref --sort=-committerdate refs/remotes --format='%(refname:short)' --count 10
 
 [instaweb]
 httpd=webrick
 
 [core]
 	excludesfile = /Users/simon/.gitignore_global
+	sharedRepository = group
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
 	path = 
 [mergetool "sourcetree"]
 	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
 	trustExitCode = true
+[push]
+	default = simple
+[merge]
+	tool = p4mergetool
+[mergetool "p4mergetool"]
+	cmd = /Applications/p4merge.app/Contents/Resources/launchp4merge $PWD/$BASE $PWD/$LOCAL $PWD/$REMOTE $PWD/$MERGED
+	trustExitCode = false
+[mergetool]
+	keepBackup = false
+[diff]
+	tool = p4mergetool
+[difftool "p4mergetool"]
+	cmd = /Applications/p4merge.app/Contents/Resources/launchp4merge $LOCAL $REMOTE

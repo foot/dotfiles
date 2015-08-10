@@ -56,7 +56,7 @@ export EDITOR='vim'
 export VISUAL='vim'
 
 alias h?="history | grep $1"
-alias g=`which ag`
+alias g="`which ag` -S"
 
 function ps? {
     ps aux | grep -i "$@"
@@ -81,8 +81,7 @@ function refresh_tags {
 
 [[ $TERM == "xterm" ]] && export -p TERM="xterm-256color"
 
-# source `which virtualenvwrapper.sh`
-# workon default
+source `which virtualenvwrapper.sh`
 
 # export NODE_PATH=/usr/local/lib/jsctags/:$NODE_PATH
 # alias vim='mvim -v'
@@ -97,4 +96,19 @@ if which brew > /dev/null; then
 fi
 
 alias nw="/Applications/node-webkit.app/Contents/MacOS/node-webkit"
+
+export HOMEBREW_GITHUB_API_TOKEN="0d3b9e78fbe75a198a2dc5a991409e9acc4253ef"
+
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+export LC_CTYPE=en_US.UTF-8
+
+alias p4diff="/Applications/p4merge.app/Contents/Resources/launchp4merge"
+alias lein="rlwrap lein"
+
+export JAVA_HOME=$(/usr/libexec/java_home -v 1.7)
+setjdk() {
+  export JAVA_HOME=$(/usr/libexec/java_home -v $1)
+}
+setjdk 1.8
 
