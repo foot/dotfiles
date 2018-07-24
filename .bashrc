@@ -1,4 +1,4 @@
-export PATH=~/bin:/usr/local/sbin:/usr/local/bin:~/.cabal/bin:/usr/local/share/npm/bin:./node_modules/.bin/:"${PATH}"
+export PATH=~/bin:/usr/local/sbin:/usr/local/bin:~/.cabal/bin:/usr/local/share/npm/bin:./node_modules/.bin:/Users/simon/weave/bin:~/Library/Python/3.7/bin:"${PATH}"
 
 
 # If not running interactively, don't do anything
@@ -6,8 +6,8 @@ export PATH=~/bin:/usr/local/sbin:/usr/local/bin:~/.cabal/bin:/usr/local/share/n
 
 # don't put duplicate lines in the history. See bash(1) for more options
 export HISTCONTROL=ignoredups
-export HISTFILESIZE=10000
-
+export HISTFILESIZE=100000
+export HISTSIZE=100000
 # give back <c-s> to forward search (opposite of c-r)
 stty stop undef
 
@@ -66,6 +66,16 @@ function gc {
     eval "awk '{ print \$$1; }'"
 }
 
+function slugify {
+  iconv -t ascii//TRANSLIT | sed -E 's/[~\^]+//g' | sed -E 's/[^a-zA-Z0-9]+/-/g' | sed -E 's/^-+\|-+$//g' | tr A-Z a-z
+}
+export -f slugify
+
+trim() {
+  awk '{$1=$1};1'
+}
+export -f trim
+
 export LESS="-RMg"
 
 function refresh_tags {
@@ -81,7 +91,7 @@ function refresh_tags {
 
 [[ $TERM == "xterm" ]] && export -p TERM="xterm-256color"
 
-source `which virtualenvwrapper.sh`
+# source `which virtualenvwrapper.sh`
 
 # export NODE_PATH=/usr/local/lib/jsctags/:$NODE_PATH
 # alias vim='mvim -v'
@@ -97,18 +107,53 @@ fi
 
 alias nw="/Applications/node-webkit.app/Contents/MacOS/node-webkit"
 
-export HOMEBREW_GITHUB_API_TOKEN="0d3b9e78fbe75a198a2dc5a991409e9acc4253ef"
-
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 export LC_CTYPE=en_US.UTF-8
 
 alias p4diff="/Applications/p4merge.app/Contents/Resources/launchp4merge"
 alias lein="rlwrap lein"
+alias planck="rlwrap planck"
 
-export JAVA_HOME=$(/usr/libexec/java_home -v 1.7)
-setjdk() {
-  export JAVA_HOME=$(/usr/libexec/java_home -v $1)
-}
-setjdk 1.8
+# export JAVA_HOME=$(/usr/libexec/java_home -v 1.7)
+# setjdk() {
+  # export JAVA_HOME=$(/usr/libexec/java_home -v $1)
+# }
+# setjdk 1.8
+
+export GOPATH=/Users/simon/weave
+export AWS_DEFAULT_REGION=eu-central-1
+
+test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
+
+export PATH="/usr/local/opt/gdal2/bin:$PATH"
+
+export PATH="$HOME/.yarn/bin:$PATH"
+
+export FZF_DEFAULT_OPTS='--bind ctrl-j:accept'
+export FZF_DEFAULT_COMMAND='fd --type f'
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
+[ -s "/usr/local/opt/nvm/etc/bash_completion" ] && . "/usr/local/opt/nvm/etc/bash_completion"  # This loads nvm bash_completion
+
+source ${HOME}/google-cloud-sdk/completion.bash.inc
+source ${HOME}/google-cloud-sdk/path.bash.inc
+
+# Base16 Shell
+BASE16_SHELL="$HOME/.config/base16-shell/"
+[ -n "$PS1" ] && \
+  [ -s "$BASE16_SHELL/profile_helper.sh" ] && \
+    eval "$("$BASE16_SHELL/profile_helper.sh")"
+base16_default-dark
+export PATH="/usr/local/opt/go@1.10/bin:$PATH"
+
+eval "$(direnv hook bash)"
+
+# fh - repeat history
+fh() {
+	  eval -z $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac | sed -E 's/ *[0-9]*\*? *//' | sed -E 's/\\/\\\\/g')
+  }
+
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 

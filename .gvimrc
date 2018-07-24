@@ -13,3 +13,13 @@ colorscheme Tomorrow-Night
 "set guifont=Monospace\ 9
 " set cmdheight=2
 
+set macligatures
+" set guifont=Fira\ Code:h11
+set guifont=Hasklig\ Light:h11
+
+autocmd! GUIEnter * set vb t_vb=
+set noerrorbells 
+set novisualbell
+set t_vb=
+set visualbell t_vb=
+set linespace=2
